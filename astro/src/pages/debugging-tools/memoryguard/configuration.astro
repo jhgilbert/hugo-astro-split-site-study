@@ -1,0 +1,68 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Alert from '../../../components/Alert.astro';
+import Tabs from '../../../components/Tabs.tsx';
+import Collapsible from '../../../components/Collapsible.tsx';
+---
+<Layout title="MemoryGuard — Configuration">
+  <h1>MemoryGuard — Configuration</h1>
+  <p>MemoryGuard is configured through the options object passed to <code>startMemoryGuard()</code> or via a <code>memoryguard.config.json</code> file in your project root.</p>
+
+  <Alert type="info">
+    <p>Options passed to <code>startMemoryGuard()</code> take precedence over <code>memoryguard.config.json</code>. Use the config file for shared team defaults and the function call for environment-specific overrides.</p>
+  </Alert>
+
+  <h2>Sample Interval</h2>
+  <p>Controls how often heap snapshots are taken. Lower values give more granularity but increase overhead.</p>
+  <pre><code>"sampleInterval": 5000</code></pre>
+
+  <h2>Heap Limit</h2>
+  <p>When heap usage exceeds this threshold, MemoryGuard emits a warning event and writes an immediate snapshot. Accepts values like <code>"256mb"</code>, <code>"1gb"</code>, or a raw byte count.</p>
+  <pre><code>"heapLimit": "512mb"</code></pre>
+
+  <h2>Retention Tracking</h2>
+  <p>By default, MemoryGuard tracks the top 50 retained object types. Increase this if you need deeper analysis:</p>
+  <pre><code>"retentionDepth": 100</code></pre>
+
+  <h2>Alerts</h2>
+  <p>MemoryGuard can send alerts when thresholds are crossed. Supported channels:</p>
+  <ul>
+    <li><strong>Console</strong> — prints a warning to stderr (default)</li>
+    <li><strong>Webhook</strong> — POSTs a JSON payload to a URL you configure</li>
+    <li><strong>File</strong> — appends to a log file</li>
+  </ul>
+
+  <Tabs
+    client:load
+    id="alert-channels"
+    tabs={[
+      { label: 'Console', content: '<p>The default channel. Prints a formatted warning to stderr with heap usage details.</p><pre><code>"alerts": {\n  "channels": ["console"]\n}</code></pre>' },
+      { label: 'Webhook', content: '<p>Sends a JSON POST to your endpoint. Useful for Slack, PagerDuty, or custom alerting.</p><pre><code>"alerts": {\n  "channels": ["webhook"],\n  "webhookUrl": "https://hooks.example.com/memoryguard"\n}</code></pre>' },
+      { label: 'File', content: '<p>Appends structured log lines to a file. Good for environments where stdout/stderr is not monitored.</p><pre><code>"alerts": {\n  "channels": ["file"],\n  "alertLogPath": "./logs/memoryguard.log"\n}</code></pre>' },
+    ]}
+  />
+
+  <h2>Excluding Modules</h2>
+  <p>If certain modules produce noise (e.g., large caches you manage yourself), exclude them from tracking:</p>
+  <pre><code>{`{
+  "exclude": ["node_modules/some-cache-lib/**"]
+}`}</code></pre>
+
+  <Alert type="warning">
+    <p>Excluding too many modules can cause MemoryGuard to miss real leaks. Only exclude modules you're confident are not leaking.</p>
+  </Alert>
+
+  <Collapsible client:load title="Full configuration reference" data-testid="config-reference">
+    <ul>
+      <li><strong>sampleInterval</strong> (number) — Milliseconds between snapshots. Default: 5000.</li>
+      <li><strong>heapLimit</strong> (string) — Threshold for alerts. Default: <code>"512mb"</code>.</li>
+      <li><strong>retentionDepth</strong> (number) — Top N object types to track. Default: 50.</li>
+      <li><strong>maxReports</strong> (number) — Max reports to retain on disk. Default: 100.</li>
+      <li><strong>warmupPeriod</strong> (number) — Milliseconds to wait before monitoring starts. Default: 0.</li>
+      <li><strong>alerts.channels</strong> (string[]) — Alert destinations. Default: <code>["console"]</code>.</li>
+      <li><strong>alerts.webhookUrl</strong> (string) — URL for webhook alerts.</li>
+      <li><strong>alerts.alertLogPath</strong> (string) — File path for file-based alerts.</li>
+      <li><strong>exclude</strong> (string[]) — Glob patterns for modules to ignore.</li>
+    </ul>
+  </Collapsible>
+</Layout>

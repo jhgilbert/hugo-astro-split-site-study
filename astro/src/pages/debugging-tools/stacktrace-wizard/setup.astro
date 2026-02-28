@@ -1,0 +1,68 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Alert from '../../../components/Alert.astro';
+import Tabs from '../../../components/Tabs.tsx';
+import Collapsible from '../../../components/Collapsible.tsx';
+---
+<Layout title="StackTrace Wizard — Setup">
+  <h1>StackTrace Wizard — Setup</h1>
+  <p>StackTrace Wizard parses, deobfuscates, and visualizes stack traces from any JavaScript or TypeScript runtime.</p>
+
+  <Alert type="info">
+    <p>StackTrace Wizard works with V8, SpiderMonkey, and JavaScriptCore runtimes. V8 is auto-detected; other runtimes require a config option.</p>
+  </Alert>
+
+  <h2>Installation</h2>
+  <Tabs
+    client:load
+    id="install-stw"
+    tabs={[
+      { label: 'Yarn', content: '<pre><code>yarn add -D @stacktrace-wizard/core</code></pre>' },
+      { label: 'npm', content: '<pre><code>npm install -D @stacktrace-wizard/core</code></pre>' },
+    ]}
+  />
+
+  <h2>Source Map Configuration</h2>
+  <p>For deobfuscation to work, StackTrace Wizard needs access to your source maps. Point it to your build output:</p>
+  <pre><code>{`{
+  "sourceMaps": {
+    "dir": "./dist",
+    "include": ["**/*.map"]
+  }
+}`}</code></pre>
+
+  <h2>CI Integration</h2>
+  <p>StackTrace Wizard can run as a post-test step to automatically annotate any failing test output with enriched stack traces. Add the reporter to your test runner config:</p>
+
+  <Tabs
+    client:load
+    id="ci-runner"
+    tabs={[
+      { label: 'Vitest', content: '<pre><code>// vitest.config.ts\nreporters: [\'default\', \'@stacktrace-wizard/vitest-reporter\']</code></pre>' },
+      { label: 'Jest', content: '<pre><code>// jest.config.js\nreporters: [\'default\', \'@stacktrace-wizard/jest-reporter\']</code></pre>' },
+    ]}
+  />
+
+  <h2>Web Dashboard</h2>
+  <p>Start the local dashboard to paste and analyze stack traces interactively:</p>
+  <pre><code>npx stacktrace-wizard serve</code></pre>
+  <p>The dashboard opens at <code>http://localhost:9800</code> and provides a searchable history of every trace you've analyzed.</p>
+
+  <p>Dashboard capabilities:</p>
+  <ul>
+    <li>Paste raw stack traces for instant deobfuscation</li>
+    <li>Searchable history of all analyzed traces</li>
+    <li>Side-by-side comparison of obfuscated and deobfuscated output</li>
+    <li>Link sharing for individual traces</li>
+  </ul>
+
+  <Collapsible client:load title="Dashboard keyboard shortcuts" data-testid="dashboard-shortcuts">
+    <ul>
+      <li><strong>Ctrl+V</strong> — Paste and analyze a new trace</li>
+      <li><strong>Ctrl+K</strong> — Open the trace search</li>
+      <li><strong>J / K</strong> — Navigate between frames in a trace</li>
+      <li><strong>Enter</strong> — Open the source file for the selected frame</li>
+      <li><strong>Esc</strong> — Close the current panel</li>
+    </ul>
+  </Collapsible>
+</Layout>

@@ -1,0 +1,56 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Alert from '../../../components/Alert.astro';
+import Tabs from '../../../components/Tabs.tsx';
+import Collapsible from '../../../components/Collapsible.tsx';
+---
+<Layout title="MemoryGuard — Setup">
+  <h1>MemoryGuard — Setup</h1>
+  <p>MemoryGuard monitors heap usage in Node.js applications and alerts you to potential memory leaks in real time.</p>
+
+  <Alert type="info">
+    <p>MemoryGuard runs in a worker thread and has negligible impact on event loop latency. It's safe to use in staging and production environments.</p>
+  </Alert>
+
+  <h2>Installation</h2>
+  <Tabs
+    client:load
+    id="install-mg"
+    tabs={[
+      { label: 'Yarn', content: '<pre><code>yarn add -D @memoryguard/agent</code></pre>' },
+      { label: 'npm', content: '<pre><code>npm install -D @memoryguard/agent</code></pre>' },
+    ]}
+  />
+
+  <h2>Adding the Agent</h2>
+  <p>Import and start the agent at the top of your application entry point:</p>
+  <pre><code>{`import { startMemoryGuard } from '@memoryguard/agent';
+
+startMemoryGuard({
+  sampleInterval: 5000,  // milliseconds
+  heapLimit: '512mb',
+});`}</code></pre>
+
+  <p>Key configuration options at initialization:</p>
+  <ul>
+    <li><strong>sampleInterval</strong> — How often to take heap snapshots (in ms)</li>
+    <li><strong>heapLimit</strong> — Threshold for warning alerts</li>
+    <li><strong>retentionDepth</strong> — Number of retained object types to track</li>
+    <li><strong>alertChannels</strong> — Where to send warnings (console, webhook, file)</li>
+  </ul>
+
+  <h2>Viewing Reports</h2>
+  <p>MemoryGuard writes periodic reports to <code>.memoryguard/reports/</code>. Open any report in the companion viewer:</p>
+  <pre><code>npx memoryguard view .memoryguard/reports/latest.json</code></pre>
+  <p>The viewer shows a timeline of heap snapshots with object-level retention breakdowns.</p>
+
+  <Collapsible client:load title="Understanding the report viewer" data-testid="viewer-guide">
+    <p>The report viewer has three main panels:</p>
+    <ul>
+      <li><strong>Timeline</strong> — A line chart showing heap usage over time, with markers at each snapshot</li>
+      <li><strong>Retention Table</strong> — Lists the top object types by retained size, with growth rate indicators</li>
+      <li><strong>Diff View</strong> — Compare two snapshots to see which object types grew or shrank between them</li>
+    </ul>
+    <p>Click any point on the timeline to load that snapshot's retention breakdown in the table below.</p>
+  </Collapsible>
+</Layout>

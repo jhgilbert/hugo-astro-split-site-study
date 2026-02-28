@@ -1,0 +1,57 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Alert from '../../../components/Alert.astro';
+import Tabs from '../../../components/Tabs.tsx';
+import Collapsible from '../../../components/Collapsible.tsx';
+---
+<Layout title="MemoryGuard — Troubleshooting">
+  <h1>MemoryGuard — Troubleshooting</h1>
+  <p>Common problems and their solutions.</p>
+
+  <h2>Agent fails to start with "Worker not supported"</h2>
+  <p>MemoryGuard requires Node.js 18+ for worker thread support. Check your version with <code>node -v</code>. If you're running an older version in CI, update your CI image or use a version manager like <code>nvm</code>.</p>
+
+  <Alert type="error">
+    <p>Node.js versions below 18 are not supported and will not work, even with polyfills. Worker threads are a hard requirement.</p>
+  </Alert>
+
+  <h2>Reports directory grows too large</h2>
+  <p>By default, MemoryGuard retains the last 100 reports. Lower this with:</p>
+  <pre><code>"maxReports": 20</code></pre>
+  <p>You can also add <code>.memoryguard/</code> to your <code>.gitignore</code> to keep reports out of version control.</p>
+
+  <p>Tips for managing report storage:</p>
+  <ul>
+    <li>Set <code>maxReports</code> to a lower value for CI environments</li>
+    <li>Use <code>npx memoryguard prune</code> to delete old reports manually</li>
+    <li>Archive reports to cloud storage before pruning if you need long-term history</li>
+    <li>Increase <code>sampleInterval</code> to generate fewer snapshots per report</li>
+  </ul>
+
+  <h2>False positive leak warnings</h2>
+  <p>Some patterns — like growing caches or connection pools that haven't reached steady state — can trigger false warnings during startup. Set a warm-up period to delay monitoring:</p>
+  <pre><code>"warmupPeriod": 30000</code></pre>
+
+  <Tabs
+    client:load
+    id="false-positive-patterns"
+    tabs={[
+      { label: 'Caches', content: '<p>In-memory caches like <code>node-cache</code> or custom LRU caches grow during the warm-up phase. Once they reach their max size, growth stops. Set a <code>warmupPeriod</code> longer than your cache fill time.</p>' },
+      { label: 'Connection Pools', content: '<p>Database and HTTP connection pools allocate connections lazily. The heap grows as new connections are created until the pool reaches its max size. This is normal behavior, not a leak.</p>' },
+      { label: 'Module Loading', content: '<p>Dynamic <code>import()</code> calls cause heap growth as modules are loaded and cached. This stabilizes after all modules are loaded. Use <code>warmupPeriod</code> to skip this phase.</p>' },
+    ]}
+  />
+
+  <h2>Viewer shows empty timeline</h2>
+  <p>This usually means the report file is from an incompatible version. Re-run your application with the latest agent to regenerate reports, or update the viewer: <code>npx memoryguard@latest view</code>.</p>
+
+  <Collapsible client:load title="Checking version compatibility" data-testid="version-compat">
+    <p>MemoryGuard reports include a <code>version</code> field in their JSON header. The viewer supports reports from the last 3 major versions. To check compatibility:</p>
+    <pre><code>npx memoryguard report-info .memoryguard/reports/latest.json</code></pre>
+    <p>This prints the report version, agent version that created it, and whether the current viewer can read it.</p>
+  </Collapsible>
+
+  <Alert type="warning">
+    <p>Always keep the agent and viewer on the same major version. Cross-major-version reports may display incomplete data without any warning.</p>
+  </Alert>
+</Layout>

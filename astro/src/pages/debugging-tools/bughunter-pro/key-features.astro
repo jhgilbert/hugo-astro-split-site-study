@@ -1,0 +1,55 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Alert from '../../../components/Alert.astro';
+import Tabs from '../../../components/Tabs.tsx';
+import Collapsible from '../../../components/Collapsible.tsx';
+---
+<Layout title="BugHunter Pro — Key Features">
+  <h1>BugHunter Pro — Key Features</h1>
+  <p>BugHunter Pro uses static analysis and runtime heuristics to surface bugs before they reach production.</p>
+
+  <h2>Smart Breakpoints</h2>
+  <p>BugHunter Pro analyzes control flow to suggest breakpoints at decision points most likely to reveal incorrect state. Instead of manually stepping through dozens of lines, you get a curated set of pause locations.</p>
+
+  <Alert type="success">
+    <p>Smart Breakpoints reduce average debugging time by 35% based on internal benchmarks across 200+ projects.</p>
+  </Alert>
+
+  <h2>Anomaly Detection</h2>
+  <p>During a debugging session, BugHunter Pro tracks variable values and flags statistical outliers — for example, a loop counter that suddenly jumps by three orders of magnitude. Anomalies appear as inline annotations in your editor.</p>
+
+  <Tabs
+    client:load
+    id="anomaly-modes"
+    tabs={[
+      { label: 'Strict Mode', content: '<p>Flags any value that deviates more than 2 standard deviations from the running mean. Best for numeric-heavy code with predictable ranges.</p>' },
+      { label: 'Relaxed Mode', content: '<p>Only flags values that exceed a 5x deviation threshold. Reduces noise in code with naturally high variance, like event handlers or user input processing.</p>' },
+      { label: 'Custom', content: '<p>Define your own thresholds per variable or scope in <code>.bughunterrc</code>. Useful when different parts of your codebase have different expected ranges.</p>' },
+    ]}
+  />
+
+  <h2>Root Cause Traces</h2>
+  <p>When an exception is thrown, BugHunter Pro walks the call stack backward and highlights the earliest point where state diverged from the expected path. This is especially useful for async code where the throw site is far from the actual mistake.</p>
+
+  <h2>Session Replay</h2>
+  <p>Every debugging session is recorded locally. You can replay a session to review the exact sequence of variable mutations without re-running the program. Sessions can be exported and shared with teammates.</p>
+
+  <p>Key replay capabilities:</p>
+  <ul>
+    <li>Step forward and backward through variable mutations</li>
+    <li>Filter replay by specific variables or scopes</li>
+    <li>Export sessions as shareable <code>.bhsession</code> files</li>
+    <li>Compare two sessions side by side to find regressions</li>
+  </ul>
+
+  <Collapsible client:load title="Session file format details" data-testid="session-format">
+    <p>Session files use a compact binary format (<code>.bhsession</code>) that stores:</p>
+    <ul>
+      <li>Timestamped variable snapshots at each mutation point</li>
+      <li>Call stack frames with source locations</li>
+      <li>Anomaly markers and Smart Breakpoint hits</li>
+      <li>Source file hashes for version verification during replay</li>
+    </ul>
+    <p>Average session size is 2–5 MB for a 30-minute debugging session.</p>
+  </Collapsible>
+</Layout>

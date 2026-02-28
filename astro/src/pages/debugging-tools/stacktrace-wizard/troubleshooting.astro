@@ -1,0 +1,59 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Alert from '../../../components/Alert.astro';
+import Tabs from '../../../components/Tabs.tsx';
+import Collapsible from '../../../components/Collapsible.tsx';
+---
+<Layout title="StackTrace Wizard — Troubleshooting">
+  <h1>StackTrace Wizard — Troubleshooting</h1>
+  <p>Solutions to frequently encountered issues.</p>
+
+  <h2>Source maps not found</h2>
+  <p>If deobfuscation returns the original minified frames, double-check that your source maps are in the configured directory and that file names match (including hashes). Run <code>stacktrace-wizard validate</code> to get a diagnostic report on source map coverage.</p>
+
+  <p>Things to check:</p>
+  <ul>
+    <li>Source map files have the <code>.map</code> extension</li>
+    <li>File names match the compiled output (including content hashes)</li>
+    <li>The <code>sourceMaps.dir</code> config points to the correct build output folder</li>
+    <li>Source maps weren't stripped during a production build step</li>
+  </ul>
+
+  <Alert type="warning">
+    <p>If you use content hashing in your build output, source maps must be regenerated after every build. Stale maps will produce incorrect deobfuscation.</p>
+  </Alert>
+
+  <h2>Trace parsing fails for non-V8 runtimes</h2>
+  <p>By default, StackTrace Wizard expects V8-style traces. For other runtimes (SpiderMonkey, JavaScriptCore), set the <code>runtime</code> option:</p>
+  <pre><code>{`{
+  "runtime": "spidermonkey"
+}`}</code></pre>
+
+  <Tabs
+    client:load
+    id="runtime-formats"
+    tabs={[
+      { label: 'V8 (default)', content: '<p>Used by Node.js and Chromium-based browsers. Traces start with the error message followed by indented <code>at</code> lines.</p><pre><code>Error: something broke\n    at foo (bar.js:10:5)\n    at main (index.js:3:1)</code></pre>' },
+      { label: 'SpiderMonkey', content: '<p>Used by Firefox. Traces use <code>@</code> syntax without the <code>at</code> keyword.</p><pre><code>foo@bar.js:10:5\nmain@index.js:3:1</code></pre>' },
+      { label: 'JavaScriptCore', content: '<p>Used by Safari and Bun. Similar to V8 but with slight formatting differences in column numbers and anonymous functions.</p>' },
+    ]}
+  />
+
+  <h2>Dashboard won't start</h2>
+  <p>The dashboard binds to port 9800. If that port is in use, specify an alternative:</p>
+  <pre><code>npx stacktrace-wizard serve --port 9801</code></pre>
+  <p>Also ensure no firewall rules are blocking localhost connections on the chosen port.</p>
+
+  <Collapsible client:load title="Finding what's using port 9800" data-testid="port-debug">
+    <p>Use these commands to identify the process occupying the port:</p>
+    <ul>
+      <li><strong>macOS/Linux:</strong> <code>lsof -i :9800</code></li>
+      <li><strong>Windows:</strong> <code>netstat -ano | findstr :9800</code></li>
+    </ul>
+    <p>Once identified, you can either stop that process or choose a different port for StackTrace Wizard.</p>
+  </Collapsible>
+
+  <Alert type="error">
+    <p>Do not run multiple StackTrace Wizard dashboard instances on the same port. This causes silent data corruption in the trace history database.</p>
+  </Alert>
+</Layout>

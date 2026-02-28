@@ -1,0 +1,61 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Alert from '../../../components/Alert.astro';
+import Tabs from '../../../components/Tabs.tsx';
+import Collapsible from '../../../components/Collapsible.tsx';
+---
+<Layout title="BugHunter Pro — Troubleshooting">
+  <h1>BugHunter Pro — Troubleshooting</h1>
+  <p>Common issues and how to resolve them.</p>
+
+  <Alert type="warning">
+    <p>Before troubleshooting, run <code>bughunter doctor</code> to check for common configuration problems. Most issues are caught automatically.</p>
+  </Alert>
+
+  <h2>"License expired" error on startup</h2>
+  <p>Your license key is validated against the BugHunter license server on first run each day. If your system clock is skewed or the server is unreachable, you may see a false expiration error. Check your clock with <code>date</code> and verify network connectivity to <code>license.bughunter.dev</code>.</p>
+
+  <p>Common causes:</p>
+  <ul>
+    <li>System clock is more than 5 minutes off from UTC</li>
+    <li>Corporate proxy blocking outbound HTTPS to <code>license.bughunter.dev</code></li>
+    <li>License key was rotated by your team admin</li>
+    <li>Trial period has genuinely expired</li>
+  </ul>
+
+  <h2>IDE extension not detecting .bughunterrc</h2>
+  <p>The extension searches the workspace root and up to two parent directories. If your config file is outside that range, set the path explicitly in the extension settings under <strong>BugHunter &gt; Config Path</strong>.</p>
+
+  <Tabs
+    client:load
+    id="ide-config"
+    tabs={[
+      { label: 'VS Code', content: '<p>Open Settings (Ctrl+,), search for "BugHunter", and set the <strong>Config Path</strong> field to the absolute path of your <code>.bughunterrc</code> file.</p>' },
+      { label: 'JetBrains', content: '<p>Go to <strong>Settings &gt; Tools &gt; BugHunter Pro</strong> and set the configuration file path. Click <strong>Test</strong> to verify the file is readable.</p>' },
+    ]}
+  />
+
+  <h2>High CPU usage during anomaly detection</h2>
+  <p>Anomaly detection instruments every variable assignment. In very hot loops (millions of iterations), this can cause noticeable overhead. You can scope detection to specific files or functions in your <code>.bughunterrc</code>:</p>
+  <pre><code>{`{
+  "anomalyDetection": {
+    "include": ["src/services/**"]
+  }
+}`}</code></pre>
+
+  <Collapsible client:load title="Advanced performance options" data-testid="perf-options">
+    <ul>
+      <li><strong>sampleRate</strong> — Instrument only every Nth assignment (e.g., <code>"sampleRate": 10</code> instruments 10% of assignments)</li>
+      <li><strong>maxTrackedVars</strong> — Limit the number of concurrently tracked variables (default: 500)</li>
+      <li><strong>disableInProduction</strong> — Automatically disable anomaly detection when <code>NODE_ENV=production</code></li>
+      <li><strong>cpuThreshold</strong> — Pause instrumentation if CPU usage exceeds this percentage (default: 80)</li>
+    </ul>
+  </Collapsible>
+
+  <h2>Session replay files are too large</h2>
+  <p>By default, sessions capture full snapshots every 500 mutations. Lower the frequency with <code>"snapshotInterval": 2000</code> in your config to reduce file size at the cost of replay granularity.</p>
+
+  <Alert type="error">
+    <p>Do not delete session files while BugHunter Pro is running. This can corrupt the session index and cause crashes on the next replay attempt.</p>
+  </Alert>
+</Layout>

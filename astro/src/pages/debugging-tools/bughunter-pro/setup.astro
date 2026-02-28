@@ -1,0 +1,54 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Alert from '../../../components/Alert.astro';
+import Tabs from '../../../components/Tabs.tsx';
+import Collapsible from '../../../components/Collapsible.tsx';
+---
+<Layout title="BugHunter Pro — Setup">
+  <h1>BugHunter Pro — Setup</h1>
+  <p>Get BugHunter Pro running in your project in a few minutes.</p>
+
+  <Alert type="info">
+    <p>BugHunter Pro requires a valid license key. Contact your team admin or sign up at <strong>bughunter.dev</strong> to get one.</p>
+  </Alert>
+
+  <h2>Prerequisites</h2>
+  <ul>
+    <li>Node.js 18 or later</li>
+    <li>A supported package manager (npm, yarn, or pnpm)</li>
+    <li>A BugHunter Pro license key (available from your team admin)</li>
+  </ul>
+
+  <h2>Installation</h2>
+  <Tabs
+    client:load
+    id="install-bh"
+    tabs={[
+      { label: 'npm', content: '<pre><code>npm install -g @bughunter/cli</code></pre>' },
+      { label: 'Yarn', content: '<pre><code>yarn global add @bughunter/cli</code></pre>' },
+      { label: 'pnpm', content: '<pre><code>pnpm add -g @bughunter/cli</code></pre>' },
+    ]}
+  />
+
+  <p>Then initialize it in your project root:</p>
+  <pre><code>bughunter init --key YOUR_LICENSE_KEY</code></pre>
+  <p>This creates a <code>.bughunterrc</code> configuration file with sensible defaults.</p>
+
+  <h2>IDE Integration</h2>
+  <p>BugHunter Pro ships with extensions for VS Code and JetBrains IDEs. Install the extension from your IDE's marketplace, then restart. The extension automatically picks up the <code>.bughunterrc</code> file from your workspace root.</p>
+
+  <h2>Verifying the Installation</h2>
+  <p>Run the built-in diagnostic command to confirm everything is wired up:</p>
+  <pre><code>bughunter doctor</code></pre>
+  <p>You should see green checkmarks for license, runtime, and project configuration.</p>
+
+  <Collapsible client:load title="What bughunter doctor checks" data-testid="doctor-details">
+    <ul>
+      <li><strong>License</strong> — validates your key against the license server</li>
+      <li><strong>Runtime</strong> — confirms Node.js version and worker thread support</li>
+      <li><strong>Config</strong> — parses <code>.bughunterrc</code> for syntax errors or deprecated options</li>
+      <li><strong>IDE</strong> — detects whether a supported editor extension is installed</li>
+      <li><strong>Network</strong> — tests connectivity to telemetry and update endpoints</li>
+    </ul>
+  </Collapsible>
+</Layout>
