@@ -2,8 +2,6 @@
 title: "Code Blocks Demo"
 ---
 
-# Code Blocks — Hugo
-
 Syntax-highlighted code blocks rendered with Hugo's built-in Chroma highlighter.
 
 ## JavaScript

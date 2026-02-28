@@ -2,8 +2,6 @@
 title: "Collapsible Demo"
 ---
 
-# Collapsible Sections — Hugo
-
 Collapsible content sections rendered with Hugo shortcodes and vanilla JS.
 
 ## Default (closed)

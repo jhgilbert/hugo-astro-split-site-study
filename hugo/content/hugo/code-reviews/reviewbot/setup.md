@@ -2,8 +2,6 @@
 title: "ReviewBot — Setup"
 ---
 
-# ReviewBot — Setup
-
 ReviewBot is an automated code review assistant that integrates with your Git hosting platform to provide instant feedback on pull requests.
 
 ## Prerequisites

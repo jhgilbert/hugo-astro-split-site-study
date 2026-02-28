@@ -2,8 +2,6 @@
 title: "ReviewBot — Key Features"
 ---
 
-# ReviewBot — Key Features
-
 ReviewBot combines static analysis with pattern-based heuristics to catch issues that linters miss.
 
 ## Contextual Suggestions

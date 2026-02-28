@@ -1,107 +1,167 @@
 ---
-import '../../../shared/theme/index.css';
-import { ClientRouter } from 'astro:transitions';
-import navData from '../../../shared/nav.yaml';
-import settingsToggleScript from '../../../shared/settings-toggle.js?raw';
+import "../../../shared/theme/index.css";
+import { ClientRouter } from "astro:transitions";
+import navData from "../../../shared/nav.yaml";
+import settingsToggleScript from "../../../shared/settings-toggle.js?raw";
 
 interface Props {
   title: string;
 }
 
 const { title } = Astro.props;
-const currentPath = Astro.url.pathname.replace(/\/$/, '') + '/';
+const currentPath = Astro.url.pathname.replace(/\/$/, "") + "/";
 
 function isCurrentSection(path: string): boolean {
   return currentPath.startsWith(path);
 }
 
 function isCurrentPage(path: string): boolean {
-  return currentPath === path + '/';
+  return currentPath === path + "/";
 }
 
-function getPlatform(itemPlatform: string | undefined, parentPlatform: string): string {
+function getPlatform(
+  itemPlatform: string | undefined,
+  parentPlatform: string,
+): string {
   return itemPlatform || parentPlatform;
 }
 ---
+
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{title} — Hugo/Astro Study</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='14' height='32' rx='3' fill='%232563eb'/><rect x='18' width='14' height='32' rx='3' fill='%2360a5fa'/></svg>">
-  <script set:html={settingsToggleScript} />
-  <ClientRouter />
-</head>
-<body>
-  <a href="#main-content" class="skip-link">Skip to content</a>
-  <div class="layout">
-    <header class="layout__header" transition:name="site-header" transition:animate="none">
-      <a href="/astro/" class="layout__header-title">Hugo/Astro Study</a>
-      <div class="layout__header-actions">
-        <button id="density-toggle" class="settings-toggle" type="button" aria-label="Switch to compact spacing">↔️</button>
-        <button id="theme-toggle" class="settings-toggle" type="button" aria-label="Switch to dark mode">🌙</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} — Hugo/Astro Split Site Study</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='14' height='32' rx='3' fill='%232563eb'/><rect x='18' width='14' height='32' rx='3' fill='%2360a5fa'/></svg>"
+    />
+    <script set:html={settingsToggleScript} />
+    <ClientRouter />
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    <div class="layout">
+      <header
+        class="layout__header"
+        transition:name="site-header"
+        transition:animate="none"
+      >
+        <a href="/astro/" class="layout__header-title">Hugo/Astro Study</a>
+        <div class="layout__header-actions">
+          <button
+            id="density-toggle"
+            class="settings-toggle"
+            type="button"
+            aria-label="Switch to compact spacing">↔️</button
+          >
+          <button
+            id="theme-toggle"
+            class="settings-toggle"
+            type="button"
+            aria-label="Switch to dark mode">🌙</button
+          >
+        </div>
+      </header>
+      <div class="layout__body">
+        <nav
+          class="layout__sidebar"
+          aria-label="Site navigation"
+          transition:name="site-sidebar"
+          transition:animate="none"
+        >
+          <ul class="nav__list">
+            {
+              navData.nav.map((section: any) => (
+                <li class="nav__section">
+                  <details open={isCurrentSection(section.path)}>
+                    <summary>{section.title}</summary>
+                    {section.children && (
+                      <ul class="nav__children">
+                        {section.children.map((child: any) => {
+                          const childPlatform = getPlatform(
+                            child.platform,
+                            section.platform,
+                          );
+                          if (child.children) {
+                            return (
+                              <li>
+                                <details open={isCurrentSection(child.path)}>
+                                  <summary>{child.title}</summary>
+                                  <ul class="nav__children">
+                                    {child.children.map((grandchild: any) => {
+                                      const gcPlatform = getPlatform(
+                                        grandchild.platform,
+                                        childPlatform,
+                                      );
+                                      return (
+                                        <li>
+                                          <a
+                                            href={grandchild.path + "/"}
+                                            class="nav__link"
+                                            aria-current={
+                                              isCurrentPage(grandchild.path)
+                                                ? "page"
+                                                : undefined
+                                            }
+                                            data-astro-reload={
+                                              gcPlatform !== "astro"
+                                                ? true
+                                                : undefined
+                                            }
+                                          >
+                                            {grandchild.title}
+                                          </a>
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                </details>
+                              </li>
+                            );
+                          }
+                          return (
+                            <li>
+                              <a
+                                href={child.path + "/"}
+                                class="nav__link"
+                                aria-current={
+                                  isCurrentPage(child.path) ? "page" : undefined
+                                }
+                                data-astro-reload={
+                                  childPlatform !== "astro" ? true : undefined
+                                }
+                              >
+                                {child.title}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
+                  </details>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+        <main
+          id="main-content"
+          class="layout__main"
+          tabindex="-1"
+          transition:name="main-content"
+          transition:animate="none"
+        >
+          <slot />
+        </main>
       </div>
-    </header>
-    <div class="layout__body">
-      <nav class="layout__sidebar" aria-label="Site navigation" transition:name="site-sidebar" transition:animate="none">
-        <ul class="nav__list">
-          {navData.nav.map((section: any) => (
-            <li class="nav__section">
-              <details open={isCurrentSection(section.path)}>
-                <summary>{section.title}</summary>
-                {section.children && (
-                  <ul class="nav__children">
-                    {section.children.map((child: any) => {
-                      const childPlatform = getPlatform(child.platform, section.platform);
-                      if (child.children) {
-                        return (
-                          <li>
-                            <details open={isCurrentSection(child.path)}>
-                              <summary>{child.title}</summary>
-                              <ul class="nav__children">
-                                {child.children.map((grandchild: any) => {
-                                  const gcPlatform = getPlatform(grandchild.platform, childPlatform);
-                                  return (
-                                    <li>
-                                      <a
-                                        href={grandchild.path + '/'}
-                                        class="nav__link"
-                                        aria-current={isCurrentPage(grandchild.path) ? 'page' : undefined}
-                                        data-astro-reload={gcPlatform !== 'astro' ? true : undefined}
-                                      >{grandchild.title}</a>
-                                    </li>
-                                  );
-                                })}
-                              </ul>
-                            </details>
-                          </li>
-                        );
-                      }
-                      return (
-                        <li>
-                          <a
-                            href={child.path + '/'}
-                            class="nav__link"
-                            aria-current={isCurrentPage(child.path) ? 'page' : undefined}
-                            data-astro-reload={childPlatform !== 'astro' ? true : undefined}
-                          >{child.title}</a>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </details>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      <main id="main-content" class="layout__main" tabindex="-1" transition:name="main-content" transition:animate="none">
-        <slot />
-      </main>
+      <footer
+        class="layout__footer"
+        transition:name="site-footer"
+        transition:animate="none"
+      >
+        Hugo/Astro Split Site Study
+      </footer>
     </div>
-    <footer class="layout__footer" transition:name="site-footer" transition:animate="none">
-      Hugo/Astro Split Site Study
-    </footer>
-  </div>
-</body>
+  </body>
 </html>

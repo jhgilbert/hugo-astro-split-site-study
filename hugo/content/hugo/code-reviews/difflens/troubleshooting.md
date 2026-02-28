@@ -2,8 +2,6 @@
 title: "DiffLens — Troubleshooting"
 ---
 
-# DiffLens — Troubleshooting
-
 Solutions to common issues with DiffLens.
 
 ## Semantic highlighting shows no colors

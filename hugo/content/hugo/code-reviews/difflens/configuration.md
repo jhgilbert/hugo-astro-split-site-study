@@ -2,8 +2,6 @@
 title: "DiffLens — Configuration"
 ---
 
-# DiffLens — Configuration
-
 DiffLens is configured through `difflens.config.json` in your project root.
 
 ## Base Branch

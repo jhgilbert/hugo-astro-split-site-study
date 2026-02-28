@@ -2,8 +2,6 @@
 title: "ReviewBot — Troubleshooting"
 ---
 
-# ReviewBot — Troubleshooting
-
 Common issues and their resolutions.
 
 ## ReviewBot doesn't comment on new PRs

@@ -2,8 +2,6 @@
 title: "DiffLens — Setup"
 ---
 
-# DiffLens — Setup
-
 DiffLens is a visual diff and code review tool that renders side-by-side comparisons with semantic highlighting — showing you *what changed* and *why it matters*.
 
 ## Installation

@@ -2,8 +2,6 @@
 title: "Tabs Demo"
 ---
 
-# Tabs — Hugo
-
 Tab components rendered with Hugo shortcodes and vanilla JS.
 
 ## Two tabs

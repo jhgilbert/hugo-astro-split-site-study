@@ -2,8 +2,6 @@
 title: "Alerts Demo"
 ---
 
-# Alerts — Hugo
-
 All alert variants rendered with the Hugo alert shortcode.
 
 ## Info
