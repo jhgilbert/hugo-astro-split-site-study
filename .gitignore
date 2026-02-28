@@ -11,6 +11,23 @@ hugo/.hugo_build.lock
 # Generated files
 Caddyfile
 
+# Test artifacts
+test-results/
+playwright-report/
+astro/test-results/
+
 # OS files
 .DS_Store
-node_modules
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Environment files
+.env
+.env.local
+.env.*.local
