@@ -36,6 +36,15 @@ This starts Hugo, Astro, and a Caddy reverse proxy concurrently. Visit:
 └── plan.md         # Implementation plan
 ```
 
+## Site Sections
+
+The nav has four top-level sections:
+
+- **Hugo** — Component demos rendered by Hugo (legacy mock)
+- **Astro** — Component demos rendered by Astro (SSR with Preact)
+- **Debugging Tools** — Documentation for imaginary debugging products (served by Astro): BugHunter Pro, StackTrace Wizard, MemoryGuard
+- **Code Reviews** — Documentation for imaginary code review products (served by Hugo): ReviewBot, DiffLens
+
 ## Testing
 
 ```bash

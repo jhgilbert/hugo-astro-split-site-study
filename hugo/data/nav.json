@@ -53,6 +53,106 @@
           "path": "/astro/collapsible"
         }
       ]
+    },
+    {
+      "title": "Debugging Tools",
+      "platform": "astro",
+      "path": "/astro/debugging-tools",
+      "children": [
+        {
+          "title": "BugHunter Pro",
+          "path": "/astro/debugging-tools/bughunter-pro",
+          "children": [
+            {
+              "title": "Setup",
+              "path": "/astro/debugging-tools/bughunter-pro/setup"
+            },
+            {
+              "title": "Key Features",
+              "path": "/astro/debugging-tools/bughunter-pro/key-features"
+            },
+            {
+              "title": "Troubleshooting",
+              "path": "/astro/debugging-tools/bughunter-pro/troubleshooting"
+            }
+          ]
+        },
+        {
+          "title": "StackTrace Wizard",
+          "path": "/astro/debugging-tools/stacktrace-wizard",
+          "children": [
+            {
+              "title": "Setup",
+              "path": "/astro/debugging-tools/stacktrace-wizard/setup"
+            },
+            {
+              "title": "Troubleshooting",
+              "path": "/astro/debugging-tools/stacktrace-wizard/troubleshooting"
+            }
+          ]
+        },
+        {
+          "title": "MemoryGuard",
+          "path": "/astro/debugging-tools/memoryguard",
+          "children": [
+            {
+              "title": "Setup",
+              "path": "/astro/debugging-tools/memoryguard/setup"
+            },
+            {
+              "title": "Configuration",
+              "path": "/astro/debugging-tools/memoryguard/configuration"
+            },
+            {
+              "title": "Troubleshooting",
+              "path": "/astro/debugging-tools/memoryguard/troubleshooting"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Code Reviews",
+      "platform": "hugo",
+      "path": "/hugo/code-reviews",
+      "children": [
+        {
+          "title": "ReviewBot",
+          "path": "/hugo/code-reviews/reviewbot",
+          "children": [
+            {
+              "title": "Setup",
+              "path": "/hugo/code-reviews/reviewbot/setup"
+            },
+            {
+              "title": "Key Features",
+              "path": "/hugo/code-reviews/reviewbot/key-features"
+            },
+            {
+              "title": "Troubleshooting",
+              "path": "/hugo/code-reviews/reviewbot/troubleshooting"
+            }
+          ]
+        },
+        {
+          "title": "DiffLens",
+          "path": "/hugo/code-reviews/difflens",
+          "children": [
+            {
+              "title": "Setup",
+              "path": "/hugo/code-reviews/difflens/setup"
+            },
+            {
+              "title": "Configuration",
+              "path": "/hugo/code-reviews/difflens/configuration"
+            },
+            {
+              "title": "Troubleshooting",
+              "path": "/hugo/code-reviews/difflens/troubleshooting"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
