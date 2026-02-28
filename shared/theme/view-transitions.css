@@ -1,14 +1,10 @@
 /* View transition animations */
 
-::view-transition-old(main-content) {
-  animation: fade-out 0.15s ease-in;
-}
-
-::view-transition-new(main-content) {
-  animation: fade-in 0.15s ease-out;
-}
-
-/* Shell elements should not animate — they persist */
+/* All elements swap instantly — no cross-fade or animation.
+   The shell persists visually because matching view-transition-names
+   prevent the browser from re-rendering them. */
+::view-transition-old(main-content),
+::view-transition-new(main-content),
 ::view-transition-old(site-header),
 ::view-transition-new(site-header),
 ::view-transition-old(site-sidebar),
@@ -16,14 +12,4 @@
 ::view-transition-old(site-footer),
 ::view-transition-new(site-footer) {
   animation: none;
-}
-
-@keyframes fade-out {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
