@@ -1,4 +1,4 @@
 {{- $label := .Get "label" -}}
 <div data-tab-label="{{ $label }}">
-{{ .Inner }}
+{{ .Inner | markdownify }}
 </div>
