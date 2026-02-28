@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ .Title }} — Hugo/Astro Study</title>
   <meta name="view-transition" content="same-origin">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='14' height='32' rx='3' fill='%232563eb'/><rect x='18' width='14' height='32' rx='3' fill='%2360a5fa'/></svg>">
   <style>
     {{- $tokens := resources.Get "theme/tokens.css" }}
     {{- $reset := resources.Get "theme/reset.css" }}
@@ -40,7 +39,7 @@
   <a href="#main-content" class="skip-link">Skip to content</a>
   <div class="layout">
     <header class="layout__header" style="view-transition-name: site-header">
-      <a href="/hugo/" class="layout__header-title">Hugo/Astro Study</a>
+      <a href="/hugo/" class="layout__header-title">Hugo/Astro Split Site: Hugo</a>
       <div class="layout__header-actions">
         <button id="density-toggle" class="settings-toggle" type="button" aria-label="Switch to compact spacing">↔️</button>
         <button id="theme-toggle" class="settings-toggle" type="button" aria-label="Switch to dark mode">🌙</button>
@@ -53,12 +52,15 @@
           {{ $navData := site.Data.nav }}
           {{ range $navData.nav }}
             <li class="nav__section">
-              <details{{ if hasPrefix $currentPath (printf "%s" .path) }} open{{ end }}>
+              {{ $sectionOpen := hasPrefix $currentPath (printf "%s" .path) }}
+              {{ if not $sectionOpen }}{{ range .children }}{{ if hasPrefix $currentPath (printf "%s" .path) }}{{ $sectionOpen = true }}{{ end }}{{ end }}{{ end }}
+              <details{{ if $sectionOpen }} open{{ end }}>
                 <summary>{{ .title }}</summary>
                 {{ if .children }}
                   <ul class="nav__children">
-                    {{ $platform := .platform }}
+                    {{ $sectionPlatform := .platform }}
                     {{ range .children }}
+                      {{ $childPlatform := default $sectionPlatform .platform }}
                       {{ if .children }}
                         <li>
                           <details{{ if hasPrefix $currentPath (printf "%s" .path) }} open{{ end }}>
@@ -66,7 +68,7 @@
                             <ul class="nav__children">
                               {{ range .children }}
                                 <li>
-                                  <a href="{{ .path }}/" class="nav__link"{{ if eq $currentPath (printf "%s/" .path) }} aria-current="page"{{ end }}{{ if ne (default $platform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
+                                  <a href="{{ .path }}/" class="nav__link"{{ if eq $currentPath (printf "%s/" .path) }} aria-current="page"{{ end }}{{ if ne (default $childPlatform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
                                 </li>
                               {{ end }}
                             </ul>
@@ -74,7 +76,7 @@
                         </li>
                       {{ else }}
                         <li>
-                          <a href="{{ .path }}/" class="nav__link"{{ if eq $currentPath (printf "%s/" .path) }} aria-current="page"{{ end }}{{ if ne (default $platform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
+                          <a href="{{ .path }}/" class="nav__link"{{ if eq $currentPath (printf "%s/" .path) }} aria-current="page"{{ end }}{{ if ne (default $childPlatform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
                         </li>
                       {{ end }}
                     {{ end }}

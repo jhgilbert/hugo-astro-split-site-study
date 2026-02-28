@@ -1,32 +1,35 @@
 nav:
-  - title: Hugo
-    platform: hugo
-    path: /hugo
+  - title: Site Components
+    path: /site-components
     children:
-      - title: Home
+      - title: Hugo
+        platform: hugo
         path: /hugo
-      - title: Alerts
-        path: /hugo/alerts
-      - title: Tabs
-        path: /hugo/tabs
-      - title: Code Blocks
-        path: /hugo/code-blocks
-      - title: Collapsible
-        path: /hugo/collapsible
-  - title: Astro
-    platform: astro
-    path: /astro
-    children:
-      - title: Home
+        children:
+          - title: Home
+            path: /hugo
+          - title: Alerts
+            path: /hugo/alerts
+          - title: Tabs
+            path: /hugo/tabs
+          - title: Code Blocks
+            path: /hugo/code-blocks
+          - title: Collapsible
+            path: /hugo/collapsible
+      - title: Astro
+        platform: astro
         path: /astro
-      - title: Alerts
-        path: /astro/alerts
-      - title: Tabs
-        path: /astro/tabs
-      - title: Code Blocks
-        path: /astro/code-blocks
-      - title: Collapsible
-        path: /astro/collapsible
+        children:
+          - title: Home
+            path: /astro
+          - title: Alerts
+            path: /astro/alerts
+          - title: Tabs
+            path: /astro/tabs
+          - title: Code Blocks
+            path: /astro/code-blocks
+          - title: Collapsible
+            path: /astro/collapsible
   - title: Debugging Tools
     platform: astro
     path: /debugging-tools
