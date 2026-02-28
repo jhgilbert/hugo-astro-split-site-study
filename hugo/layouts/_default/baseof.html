@@ -18,6 +18,7 @@
     {{- $codeChroma := resources.Get "theme/components/code-chroma.css" }}
     {{- $codeShiki := resources.Get "theme/components/code-shiki.css" }}
     {{- $collapsible := resources.Get "theme/components/collapsible.css" }}
+    {{- $tokenEditor := resources.Get "theme/components/token-editor.css" }}
     {{- $viewTransitions := resources.Get "theme/view-transitions.css" }}
     {{- with $tokens }}{{ .Content | safeCSS }}{{ end }}
     {{- with $reset }}{{ .Content | safeCSS }}{{ end }}
@@ -30,6 +31,7 @@
     {{- with $codeChroma }}{{ .Content | safeCSS }}{{ end }}
     {{- with $codeShiki }}{{ .Content | safeCSS }}{{ end }}
     {{- with $collapsible }}{{ .Content | safeCSS }}{{ end }}
+    {{- with $tokenEditor }}{{ .Content | safeCSS }}{{ end }}
     {{- with $viewTransitions }}{{ .Content | safeCSS }}{{ end }}
     {{- block "styles" . }}{{ end }}
   </style>
@@ -42,6 +44,7 @@
     <header class="layout__header" style="view-transition-name: site-header">
       <a href="/hugo/" class="layout__header-title">Hugo/Astro Split Site: Hugo</a>
       <div class="layout__header-actions">
+        <button id="token-editor-toggle" class="settings-toggle" type="button" aria-label="Open token editor">🎨</button>
         <button id="density-toggle" class="settings-toggle" type="button" aria-label="Switch to compact spacing">↔️</button>
         <button id="theme-toggle" class="settings-toggle" type="button" aria-label="Switch to dark mode">🌙</button>
       </div>
@@ -101,5 +104,7 @@
       Hugo/Astro Split Site Study
     </footer>
   </div>
+  {{- $tokenEditorJS := resources.Get "shared/token-editor.js" }}
+  <script>{{ with $tokenEditorJS }}{{ .Content | safeJS }}{{ end }}</script>
 </body>
 </html>

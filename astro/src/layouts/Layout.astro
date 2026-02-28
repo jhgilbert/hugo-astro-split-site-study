@@ -3,6 +3,8 @@ import "../../../shared/theme/index.css";
 import { ClientRouter } from "astro:transitions";
 import navData from "../../../shared/nav.yaml";
 import settingsToggleScript from "../../../shared/settings-toggle.js?raw";
+import tokenEditorScript from "../../../shared/token-editor.js?raw";
+import "../../../shared/theme/components/token-editor.css";
 
 interface Props {
   title: string;
@@ -64,6 +66,12 @@ function getPlatform(
           >Hugo/Astro Split Site: Astro</a
         >
         <div class="layout__header-actions">
+          <button
+            id="token-editor-toggle"
+            class="settings-toggle"
+            type="button"
+            aria-label="Open token editor">🎨</button
+          >
           <button
             id="density-toggle"
             class="settings-toggle"
@@ -178,5 +186,6 @@ function getPlatform(
         Hugo/Astro Split Site Study
       </footer>
     </div>
+    <script set:html={tokenEditorScript} />
   </body>
 </html>
