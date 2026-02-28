@@ -46,6 +46,7 @@ let caddyfile = `# Auto-generated Caddyfile — do not edit manually.
 # Regenerate with: yarn generate:caddy
 
 :3000 {
+\tredir / /astro/ permanent
 `;
 
 for (const prefix of hugoTopPaths) {
