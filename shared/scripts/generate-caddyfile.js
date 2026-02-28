@@ -32,16 +32,26 @@ function collectPaths(nodes, inheritedPlatform = null) {
 
 const paths = collectPaths(navData.nav);
 
-// Extract unique top-level path segments for routing
-const hugoTopPaths = [...new Set(
-  paths.hugo.map(p => '/' + p.split('/').filter(Boolean)[0])
-)];
-const astroTopPaths = [...new Set(
-  paths.astro.map(p => '/' + p.split('/').filter(Boolean)[0])
-)];
+// Extract unique top-level path segments for routing, tracking which need rewrites
+const PLATFORM_PORT = { hugo: 1313, astro: 4321 };
+const PLATFORM_PREFIX = { hugo: '/hugo', astro: '/astro' };
 
-// Use handle (not handle_path) to preserve the full path when proxying.
-// Hugo serves content at /hugo/*, Astro serves at /astro/*.
+const routeMap = new Map(); // topPath → { platform, needsRewrite }
+
+for (const [platform, platformPaths] of Object.entries(paths)) {
+  for (const p of platformPaths) {
+    const topPath = '/' + p.split('/').filter(Boolean)[0];
+    if (routeMap.has(topPath)) continue;
+    const needsRewrite = !p.startsWith(PLATFORM_PREFIX[platform]);
+    routeMap.set(topPath, { platform, needsRewrite });
+  }
+}
+
+// Generate Caddyfile.
+// Routes whose public path differs from the backend path (e.g.
+// /debugging-tools/* is served by Astro at /astro/debugging-tools/*) use
+// rewrite inside their handle block to prepend the platform prefix before
+// proxying.  Direct platform routes (/hugo/*, /astro/*) proxy as-is.
 let caddyfile = `# Auto-generated Caddyfile — do not edit manually.
 # Regenerate with: yarn generate:caddy
 
@@ -49,18 +59,21 @@ let caddyfile = `# Auto-generated Caddyfile — do not edit manually.
 \tredir / /astro/ permanent
 `;
 
-for (const prefix of hugoTopPaths) {
-  caddyfile += `\thandle ${prefix}* {
-\t\treverse_proxy localhost:1313
+for (const [topPath, { platform, needsRewrite }] of routeMap) {
+  const port = PLATFORM_PORT[platform];
+  if (needsRewrite) {
+    const prefix = PLATFORM_PREFIX[platform];
+    caddyfile += `\thandle ${topPath}* {
+\t\trewrite * ${prefix}{uri}
+\t\treverse_proxy localhost:${port}
 \t}
 `;
-}
-
-for (const prefix of astroTopPaths) {
-  caddyfile += `\thandle ${prefix}* {
-\t\treverse_proxy localhost:4321
+  } else {
+    caddyfile += `\thandle ${topPath}* {
+\t\treverse_proxy localhost:${port}
 \t}
 `;
+  }
 }
 
 // Proxy Vite dev server paths to Astro (needed for client-side hydration in dev)
@@ -92,5 +105,7 @@ caddyfile += `\thandle {
 
 writeFileSync(CADDY_PATH, caddyfile);
 console.log(`Generated ${CADDY_PATH}`);
-console.log(`  Hugo paths: ${hugoTopPaths.join(', ')}`);
-console.log(`  Astro paths: ${astroTopPaths.join(', ')}`);
+for (const [topPath, { platform, needsRewrite }] of routeMap) {
+  const rewriteNote = needsRewrite ? ` (rewrite → ${PLATFORM_PREFIX[platform]})` : '';
+  console.log(`  ${topPath} → ${platform}${rewriteNote}`);
+}

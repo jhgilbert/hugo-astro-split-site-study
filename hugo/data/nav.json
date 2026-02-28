@@ -57,55 +57,55 @@
     {
       "title": "Debugging Tools",
       "platform": "astro",
-      "path": "/astro/debugging-tools",
+      "path": "/debugging-tools",
       "children": [
         {
           "title": "BugHunter Pro",
-          "path": "/astro/debugging-tools/bughunter-pro",
+          "path": "/debugging-tools/bughunter-pro",
           "children": [
             {
               "title": "Setup",
-              "path": "/astro/debugging-tools/bughunter-pro/setup"
+              "path": "/debugging-tools/bughunter-pro/setup"
             },
             {
               "title": "Key Features",
-              "path": "/astro/debugging-tools/bughunter-pro/key-features"
+              "path": "/debugging-tools/bughunter-pro/key-features"
             },
             {
               "title": "Troubleshooting",
-              "path": "/astro/debugging-tools/bughunter-pro/troubleshooting"
+              "path": "/debugging-tools/bughunter-pro/troubleshooting"
             }
           ]
         },
         {
           "title": "StackTrace Wizard",
-          "path": "/astro/debugging-tools/stacktrace-wizard",
+          "path": "/debugging-tools/stacktrace-wizard",
           "children": [
             {
               "title": "Setup",
-              "path": "/astro/debugging-tools/stacktrace-wizard/setup"
+              "path": "/debugging-tools/stacktrace-wizard/setup"
             },
             {
               "title": "Troubleshooting",
-              "path": "/astro/debugging-tools/stacktrace-wizard/troubleshooting"
+              "path": "/debugging-tools/stacktrace-wizard/troubleshooting"
             }
           ]
         },
         {
           "title": "MemoryGuard",
-          "path": "/astro/debugging-tools/memoryguard",
+          "path": "/debugging-tools/memoryguard",
           "children": [
             {
               "title": "Setup",
-              "path": "/astro/debugging-tools/memoryguard/setup"
+              "path": "/debugging-tools/memoryguard/setup"
             },
             {
               "title": "Configuration",
-              "path": "/astro/debugging-tools/memoryguard/configuration"
+              "path": "/debugging-tools/memoryguard/configuration"
             },
             {
               "title": "Troubleshooting",
-              "path": "/astro/debugging-tools/memoryguard/troubleshooting"
+              "path": "/debugging-tools/memoryguard/troubleshooting"
             }
           ]
         }
@@ -114,41 +114,41 @@
     {
       "title": "Code Reviews",
       "platform": "hugo",
-      "path": "/hugo/code-reviews",
+      "path": "/code-reviews",
       "children": [
         {
           "title": "ReviewBot",
-          "path": "/hugo/code-reviews/reviewbot",
+          "path": "/code-reviews/reviewbot",
           "children": [
             {
               "title": "Setup",
-              "path": "/hugo/code-reviews/reviewbot/setup"
+              "path": "/code-reviews/reviewbot/setup"
             },
             {
               "title": "Key Features",
-              "path": "/hugo/code-reviews/reviewbot/key-features"
+              "path": "/code-reviews/reviewbot/key-features"
             },
             {
               "title": "Troubleshooting",
-              "path": "/hugo/code-reviews/reviewbot/troubleshooting"
+              "path": "/code-reviews/reviewbot/troubleshooting"
             }
           ]
         },
         {
           "title": "DiffLens",
-          "path": "/hugo/code-reviews/difflens",
+          "path": "/code-reviews/difflens",
           "children": [
             {
               "title": "Setup",
-              "path": "/hugo/code-reviews/difflens/setup"
+              "path": "/code-reviews/difflens/setup"
             },
             {
               "title": "Configuration",
-              "path": "/hugo/code-reviews/difflens/configuration"
+              "path": "/code-reviews/difflens/configuration"
             },
             {
               "title": "Troubleshooting",
-              "path": "/hugo/code-reviews/difflens/troubleshooting"
+              "path": "/code-reviews/difflens/troubleshooting"
             }
           ]
         }
