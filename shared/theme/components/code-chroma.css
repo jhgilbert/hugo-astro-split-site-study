@@ -1,4 +1,5 @@
-/* Chroma (Hugo) syntax highlighting — maps Chroma CSS classes to shared tokens */
+/* Chroma (Hugo) syntax highlighting — maps Chroma CSS classes to shared tokens.
+   Aligned with Shiki's css-variables token groupings for visual consistency. */
 
 /* Background/container */
 .highlight pre {
@@ -25,18 +26,18 @@
   overflow: hidden;
 }
 
-/* Keywords */
+/* Keywords + operators → Shiki: token-keyword */
 .chroma .k,
 .chroma .kc,
 .chroma .kd,
 .chroma .kn,
 .chroma .kp,
-.chroma .kr { color: var(--code-keyword); }
+.chroma .kr,
+.chroma .kt,
+.chroma .o,
+.chroma .ow { color: var(--code-keyword); }
 
-/* Keyword type (e.g., int, string) */
-.chroma .kt { color: var(--code-type); }
-
-/* Strings */
+/* Strings + tag names → Shiki: token-string-expression */
 .chroma .s,
 .chroma .sa,
 .chroma .sb,
@@ -50,9 +51,10 @@
 .chroma .sx,
 .chroma .sr,
 .chroma .s1,
-.chroma .ss { color: var(--code-string); }
+.chroma .ss,
+.chroma .nt { color: var(--code-string); }
 
-/* Comments */
+/* Comments (including preprocessor like <!DOCTYPE>) */
 .chroma .c,
 .chroma .ch,
 .chroma .cm,
@@ -61,44 +63,38 @@
 .chroma .cp,
 .chroma .cpf { color: var(--code-comment); font-style: italic; }
 
-/* Functions */
+/* Functions + attributes + decorators → Shiki: token-function */
 .chroma .nf,
-.chroma .fm { color: var(--code-function); }
+.chroma .fm,
+.chroma .na,
+.chroma .nb,
+.chroma .nd { color: var(--code-function); }
 
-/* Numbers */
+/* Numbers + constants → Shiki: token-constant */
 .chroma .m,
 .chroma .mb,
 .chroma .mf,
 .chroma .mh,
 .chroma .mi,
 .chroma .il,
-.chroma .mo { color: var(--code-number); }
+.chroma .mo,
+.chroma .l { color: var(--code-number); }
 
-/* Operators */
-.chroma .o,
-.chroma .ow { color: var(--code-operator); }
-
-/* Variables / Names */
+/* Names / identifiers */
 .chroma .n { color: var(--code-plain); }
-.chroma .na { color: var(--code-attr); }
-.chroma .nb { color: var(--code-function); }
-.chroma .nc { color: var(--code-type); }
-.chroma .nd { color: var(--code-function); }
+.chroma .nc,
+.chroma .ne,
+.chroma .nn { color: var(--code-function); }
 .chroma .ni { color: var(--code-variable); }
-.chroma .ne { color: var(--code-type); }
-.chroma .nn { color: var(--code-type); }
-.chroma .nt { color: var(--code-tag); }
 .chroma .nv,
 .chroma .vi,
 .chroma .vg,
 .chroma .vm { color: var(--code-variable); }
+.chroma .nx { color: var(--code-function); }
 
 /* Punctuation */
 .chroma .p { color: var(--code-punctuation); }
 
 /* Generic (diff-like output) */
 .chroma .gd { color: var(--code-keyword); }
-.chroma .gi { color: var(--code-type); }
-
-/* Literal */
-.chroma .l { color: var(--code-number); }
+.chroma .gi { color: var(--code-string); }

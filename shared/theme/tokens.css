@@ -81,7 +81,7 @@
   --transition-slow: 300ms ease;
 
   /* Code syntax highlighting */
-  --code-bg: #f6f8fa;
+  --code-bg: #ffffff;
   --code-border: var(--color-gray-200);
   --code-keyword: #d73a49;
   --code-string: #032f62;
