@@ -108,6 +108,10 @@ test.describe('Site Navigation', () => {
     const currentLink = nav.locator('a[aria-current="page"]');
     await expect(currentLink).toHaveText('Key Features');
     await expect(currentLink).toHaveAttribute('href', '/code-reviews/reviewbot/key-features/');
+
+    // Unrelated sections should NOT be open
+    const siteComponentsSection = nav.locator('.nav__section > details:has(> summary:text("Site Components"))');
+    await expect(siteComponentsSection).not.toHaveAttribute('open');
   });
 
   test('Astro rewritten route shows correct nav state (debugging-tools)', async ({ page }) => {
@@ -126,6 +130,10 @@ test.describe('Site Navigation', () => {
     const currentLink = nav.locator('a[aria-current="page"]');
     await expect(currentLink).toHaveText('Setup');
     await expect(currentLink).toHaveAttribute('href', '/debugging-tools/bughunter-pro/setup/');
+
+    // Unrelated sections should NOT be open
+    const siteComponentsSection = nav.locator('.nav__section > details:has(> summary:text("Site Components"))');
+    await expect(siteComponentsSection).not.toHaveAttribute('open');
   });
 
   test('HTML landmarks are correct', async ({ page }) => {

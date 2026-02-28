@@ -302,8 +302,8 @@
     });
 
     field.appendChild(label);
-    field.appendChild(input);
     field.appendChild(resetBtn);
+    field.appendChild(input);
 
     inputMap[tokenName] = { input: input, field: field, type: type };
 

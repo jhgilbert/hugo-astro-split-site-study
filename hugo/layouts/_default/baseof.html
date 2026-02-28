@@ -59,10 +59,21 @@
                nav matching. */}}
           {{ $publicPath := strings.TrimPrefix "/hugo" $relPath }}
           {{ $navData := site.Data.nav }}
+          {{/* Match sections/subsections by exact leaf-path equality, not prefix.
+               Prefix matching causes false positives because /hugo is a prefix of
+               /hugo/code-reviews/... even though those are in a different nav section. */}}
           {{ range $navData.nav }}
             <li class="nav__section">
-              {{ $sectionOpen := or (hasPrefix $relPath (printf "%s" .path)) (hasPrefix $publicPath (printf "%s" .path)) }}
-              {{ if not $sectionOpen }}{{ range .children }}{{ if or (hasPrefix $relPath (printf "%s" .path)) (hasPrefix $publicPath (printf "%s" .path)) }}{{ $sectionOpen = true }}{{ end }}{{ end }}{{ end }}
+              {{ $sectionOpen := false }}
+              {{ range .children }}
+                {{ if .children }}
+                  {{ range .children }}
+                    {{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }}{{ $sectionOpen = true }}{{ end }}
+                  {{ end }}
+                {{ else }}
+                  {{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }}{{ $sectionOpen = true }}{{ end }}
+                {{ end }}
+              {{ end }}
               <details{{ if $sectionOpen }} open{{ end }}>
                 <summary>{{ .title }}</summary>
                 {{ if .children }}
@@ -71,8 +82,12 @@
                     {{ range .children }}
                       {{ $childPlatform := default $sectionPlatform .platform }}
                       {{ if .children }}
+                        {{ $childOpen := false }}
+                        {{ range .children }}
+                          {{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }}{{ $childOpen = true }}{{ end }}
+                        {{ end }}
                         <li>
-                          <details{{ if or (hasPrefix $relPath (printf "%s" .path)) (hasPrefix $publicPath (printf "%s" .path)) }} open{{ end }}>
+                          <details{{ if $childOpen }} open{{ end }}>
                             <summary>{{ .title }}</summary>
                             <ul class="nav__children">
                               {{ range .children }}

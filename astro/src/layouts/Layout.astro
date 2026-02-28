@@ -18,15 +18,17 @@ const rawPath = Astro.url.pathname.replace(/\/$/, "") + "/";
 // path, and match against both to handle all nav entries correctly.
 const publicPath = rawPath.replace(/^\/astro/, "") || "/";
 
-function isCurrentSection(path: string, children?: any[]): boolean {
-  if (rawPath.startsWith(path) || publicPath.startsWith(path)) return true;
-  if (children) {
-    return children.some(
-      (child: any) =>
-        rawPath.startsWith(child.path) || publicPath.startsWith(child.path),
-    );
-  }
-  return false;
+// Match sections/subsections by exact leaf-path equality, not prefix.
+// Prefix matching causes false positives because /astro is a prefix of
+// /astro/debugging-tools/... even though those are in a different nav section.
+function isCurrentSection(_path: string, children?: any[]): boolean {
+  if (!children) return false;
+  return children.some((child: any) => {
+    if (child.children) {
+      return child.children.some((gc: any) => isCurrentPage(gc.path));
+    }
+    return isCurrentPage(child.path);
+  });
 }
 
 function isCurrentPage(path: string): boolean {
@@ -109,7 +111,7 @@ function getPlatform(
                           if (child.children) {
                             return (
                               <li>
-                                <details open={isCurrentSection(child.path)}>
+                                <details open={isCurrentSection(child.path, child.children)}>
                                   <summary>{child.title}</summary>
                                   <ul class="nav__children">
                                     {child.children.map((grandchild: any) => {
