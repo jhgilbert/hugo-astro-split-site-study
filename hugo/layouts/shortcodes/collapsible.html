@@ -23,7 +23,7 @@
     data-testid="{{ $id }}-content"
   >
     <div class="collapsible__content-inner">
-      <div>{{ .Inner }}</div>
+      <div>{{ .Inner | markdownify }}</div>
     </div>
   </div>
 </div>
