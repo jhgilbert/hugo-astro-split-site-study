@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Code } from 'astro:components';
+
+const jsCode = `// Fibonacci sequence generator
+function* fibonacci(limit) {
+  let a = 0, b = 1;
+  while (a <= limit) {
+    yield a;
+    [a, b] = [b, a + b];
+  }
+}
+
+const sequence = [...fibonacci(100)];
+console.log("Fibonacci:", sequence);`;
+
+const pyCode = `# Simple web scraper with error handling
+import requests
+from dataclasses import dataclass
+
+@dataclass
+class Page:
+    url: str
+    title: str
+    status: int
+
+def fetch_page(url: str) -> Page:
+    """Fetch a page and return its metadata."""
+    response = requests.get(url, timeout=10)
+    title = response.text.split("<title>")[1].split("</title>")[0]
+    return Page(url=url, title=title, status=response.status_code)
+
+if __name__ == "__main__":
+    page = fetch_page("https://example.com")
+    print(f"Title: {page.title} (HTTP {page.status})")`;
+
+const htmlCode = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hello World</title>
+  <style>
+    .container { max-width: 800px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hello, World!</h1>
+    <p>This is a <a href="#">sample page</a>.</p>
+  </div>
+</body>
+</html>`;
+
+const goCode = `package main
+
+import (
+	"fmt"
+	"net/http"
+	"log"
+)
+
+// handler responds with a greeting
+func handler(w http.ResponseWriter, r *http.Request) {
+	name := r.URL.Query().Get("name")
+	if name == "" {
+		name = "World"
+	}
+	fmt.Fprintf(w, "Hello, %s!", name)
+}
+
+func main() {
+	http.HandleFunc("/", handler)
+	log.Println("Server starting on :8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}`;
+
+const bashCode = `#!/bin/bash
+# Deploy script with environment checks
+
+set -euo pipefail
+
+ENV="\${1:-staging}"
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+echo "Deploying branch '$BRANCH' to $ENV..."
+
+if [[ "$ENV" == "production" && "$BRANCH" != "main" ]]; then
+  echo "Error: Only 'main' branch can deploy to production"
+  exit 1
+fi
+
+yarn build && yarn test
+echo "Deploy to $ENV complete."`;
+---
+<Layout title="Code Blocks Demo">
+  <h1>Code Blocks — Astro</h1>
+  <p>Syntax-highlighted code blocks rendered with Astro's built-in Shiki highlighter.</p>
+
+  <h2>JavaScript</h2>
+  <Code code={jsCode} lang="javascript" theme="css-variables" />
+
+  <h2>Python</h2>
+  <Code code={pyCode} lang="python" theme="css-variables" />
+
+  <h2>HTML</h2>
+  <Code code={htmlCode} lang="html" theme="css-variables" />
+
+  <h2>Go</h2>
+  <Code code={goCode} lang="go" theme="css-variables" />
+
+  <h2>Bash</h2>
+  <Code code={bashCode} lang="bash" theme="css-variables" />
+</Layout>

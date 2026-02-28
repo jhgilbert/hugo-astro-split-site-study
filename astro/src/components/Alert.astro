@@ -1,0 +1,20 @@
+---
+interface Props {
+  type: 'info' | 'warning' | 'error' | 'success';
+}
+
+const { type } = Astro.props;
+
+const emojis: Record<string, string> = {
+  info: 'ℹ️',
+  warning: '⚠️',
+  error: '❌',
+  success: '✅',
+};
+
+const role = (type === 'error' || type === 'warning') ? 'alert' : 'status';
+---
+<div class={`alert alert--${type}`} role={role} aria-label={type.charAt(0).toUpperCase() + type.slice(1)} data-testid={`alert-${type}`}>
+  <div class="alert__title">{emojis[type]} {type.charAt(0).toUpperCase() + type.slice(1)}</div>
+  <slot />
+</div>

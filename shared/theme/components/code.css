@@ -1,0 +1,49 @@
+/* Code block shared styles */
+
+.code-block {
+  position: relative;
+  margin: var(--space-md) 0;
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.code-block__label {
+  display: block;
+  padding: var(--space-xs) var(--space-md);
+  background: var(--color-bg-subtle);
+  border-bottom: 1px solid var(--code-border);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.code-block pre {
+  margin: 0;
+  padding: var(--space-md);
+  background: var(--code-bg);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.code-block code {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--code-plain);
+  background: transparent;
+  padding: 0;
+}
+
+/* Inline code (not inside .code-block) */
+:not(pre) > code {
+  font-family: var(--font-family-mono);
+  font-size: 0.875em;
+  padding: 0.125em 0.375em;
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-sm);
+  color: var(--code-plain);
+}

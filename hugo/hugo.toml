@@ -1,0 +1,32 @@
+baseURL = "http://localhost:1313"
+languageCode = "en-us"
+title = "Hugo/Astro Study — Hugo"
+
+[[module.mounts]]
+  source = "../shared/theme"
+  target = "assets/theme"
+
+[[module.mounts]]
+  source = "content"
+  target = "content"
+
+[[module.mounts]]
+  source = "layouts"
+  target = "layouts"
+
+[[module.mounts]]
+  source = "static"
+  target = "static"
+
+[[module.mounts]]
+  source = "data"
+  target = "data"
+
+[[module.mounts]]
+  source = "../shared"
+  target = "assets/shared"
+
+[markup.highlight]
+  noClasses = false
+  lineNos = false
+  guessSyntax = true

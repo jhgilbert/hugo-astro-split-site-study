@@ -1,0 +1,15 @@
+{
+  "name": "hugo-site",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "hugo server --port 1313"
+  },
+  "devDependencies": {
+    "hugo-bin": "0.148.0"
+  },
+  "hugo-bin": {
+    "buildTags": "extended",
+    "version": "0.148.0"
+  }
+}

@@ -1,0 +1,89 @@
+{{- $id := .Get "id" | default (printf "tabs-%d" .Ordinal) -}}
+<div class="tabs" data-testid="tabs-{{ $id }}" data-tabs-id="{{ $id }}">
+  {{ .Inner }}
+</div>
+<script>
+(function() {
+  var container = document.currentScript.previousElementSibling;
+  if (!container) return;
+  var id = container.getAttribute('data-tabs-id');
+  var rawTabs = Array.from(container.querySelectorAll('[data-tab-label]'));
+  if (rawTabs.length === 0) return;
+
+  // Build tablist
+  var tablist = document.createElement('div');
+  tablist.className = 'tabs__nav';
+  tablist.setAttribute('role', 'tablist');
+  tablist.setAttribute('aria-label', id + ' tabs');
+
+  var panels = [];
+
+  rawTabs.forEach(function(raw, i) {
+    var label = raw.getAttribute('data-tab-label');
+    var selected = i === 0;
+
+    // Create tab button
+    var btn = document.createElement('button');
+    btn.className = 'tabs__tab' + (selected ? ' tabs__tab--active' : '');
+    btn.setAttribute('role', 'tab');
+    btn.id = id + '-tab-' + i;
+    btn.setAttribute('aria-selected', String(selected));
+    btn.setAttribute('aria-controls', id + '-panel-' + i);
+    btn.setAttribute('tabindex', selected ? '0' : '-1');
+    btn.setAttribute('data-testid', 'tab-' + id + '-' + i);
+    btn.textContent = label;
+    tablist.appendChild(btn);
+
+    // Create panel
+    var panel = document.createElement('div');
+    panel.className = 'tabs__panel';
+    panel.setAttribute('role', 'tabpanel');
+    panel.id = id + '-panel-' + i;
+    panel.setAttribute('aria-labelledby', id + '-tab-' + i);
+    panel.setAttribute('data-testid', 'panel-' + id + '-' + i);
+    if (!selected) panel.hidden = true;
+    panel.innerHTML = raw.innerHTML;
+    panels.push(panel);
+
+    raw.remove();
+  });
+
+  container.innerHTML = '';
+  container.appendChild(tablist);
+  panels.forEach(function(p) { container.appendChild(p); });
+
+  // Event handlers
+  var tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
+
+  function activate(index) {
+    tabs.forEach(function(tab, i) {
+      var sel = i === index;
+      tab.setAttribute('aria-selected', String(sel));
+      tab.setAttribute('tabindex', sel ? '0' : '-1');
+      tab.classList.toggle('tabs__tab--active', sel);
+    });
+    panels.forEach(function(panel, i) {
+      panel.hidden = i !== index;
+    });
+  }
+
+  tabs.forEach(function(tab, i) {
+    tab.addEventListener('click', function() { activate(i); });
+  });
+
+  tablist.addEventListener('keydown', function(e) {
+    var current = tabs.indexOf(document.activeElement);
+    var next = current;
+    switch (e.key) {
+      case 'ArrowRight': next = (current + 1) % tabs.length; break;
+      case 'ArrowLeft': next = (current - 1 + tabs.length) % tabs.length; break;
+      case 'Home': next = 0; break;
+      case 'End': next = tabs.length - 1; break;
+      default: return;
+    }
+    e.preventDefault();
+    activate(next);
+    tabs[next].focus();
+  });
+})();
+</script>

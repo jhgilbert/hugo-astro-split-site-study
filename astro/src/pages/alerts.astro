@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Alert from '../components/Alert.astro';
+---
+<Layout title="Alerts Demo">
+  <h1>Alerts — Astro</h1>
+  <p>All alert variants rendered with the Astro Alert component.</p>
+
+  <h2>Info</h2>
+  <Alert type="info">
+    <p>This is an informational alert. It provides helpful context.</p>
+  </Alert>
+
+  <h2>Warning</h2>
+  <Alert type="warning">
+    <p>This is a warning alert. Something might need attention.</p>
+  </Alert>
+
+  <h2>Error</h2>
+  <Alert type="error">
+    <p>This is an error alert. Something went wrong.</p>
+  </Alert>
+
+  <h2>Success</h2>
+  <Alert type="success">
+    <p>This is a success alert. The operation completed successfully.</p>
+  </Alert>
+</Layout>

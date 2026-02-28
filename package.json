@@ -1,0 +1,24 @@
+{
+  "name": "hugo-astro-split-site-study",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "astro",
+    "hugo",
+    "shared"
+  ],
+  "scripts": {
+    "generate:caddy": "node shared/scripts/generate-caddyfile.js",
+    "generate:nav": "node shared/scripts/generate-nav-data.js",
+    "predev": "node shared/scripts/generate-caddyfile.js && node shared/scripts/generate-nav-data.js",
+    "dev": "concurrently -n hugo,astro,caddy -c blue,magenta,green \"yarn workspace hugo-site dev\" \"yarn workspace astro-site dev\" \"caddy run --config Caddyfile\"",
+    "test:unit": "yarn workspace astro-site test",
+    "test:e2e": "npx playwright test",
+    "test": "yarn test:unit && yarn test:e2e",
+    "view-snapshots": "node shared/scripts/generate-snapshot-viewer.js && open snapshot-viewer/index.html"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.0",
+    "concurrently": "^9.1.0"
+  }
+}

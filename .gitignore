@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.astro/
+snapshot-viewer/
+
+# Hugo build output
+hugo/public/
+hugo/resources/
+
+# Generated files
+Caddyfile
+
+# OS files
+.DS_Store

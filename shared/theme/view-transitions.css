@@ -1,0 +1,29 @@
+/* View transition animations */
+
+::view-transition-old(main-content) {
+  animation: fade-out 0.15s ease-in;
+}
+
+::view-transition-new(main-content) {
+  animation: fade-in 0.15s ease-out;
+}
+
+/* Shell elements should not animate — they persist */
+::view-transition-old(site-header),
+::view-transition-new(site-header),
+::view-transition-old(site-sidebar),
+::view-transition-new(site-sidebar),
+::view-transition-old(site-footer),
+::view-transition-new(site-footer) {
+  animation: none;
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Tabs from '../components/Tabs.tsx';
+---
+<Layout title="Tabs Demo">
+  <h1>Tabs — Astro</h1>
+  <p>Tab components rendered with Preact and hydrated client-side.</p>
+
+  <h2>Two tabs</h2>
+  <Tabs
+    client:load
+    id="two"
+    tabs={[
+      { label: 'First', content: '<p>Content of the first tab.</p>' },
+      { label: 'Second', content: '<p>Content of the second tab.</p>' },
+    ]}
+  />
+
+  <h2>Three tabs</h2>
+  <Tabs
+    client:load
+    id="three"
+    tabs={[
+      { label: 'Overview', content: '<p>This is an overview of the feature.</p>' },
+      { label: 'Details', content: '<p>Here are the detailed specifications.</p>' },
+      { label: 'Examples', content: '<p>Some practical examples to get you started.</p>' },
+    ]}
+  />
+
+  <h2>Tabs with rich content</h2>
+  <Tabs
+    client:load
+    id="rich"
+    tabs={[
+      { label: 'Code', content: '<pre><code>const x = 42;\nconsole.log(x);</code></pre>' },
+      { label: 'Output', content: '<p>The output would be: <code>42</code></p>' },
+    ]}
+  />
+</Layout>

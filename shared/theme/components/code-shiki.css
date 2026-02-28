@@ -1,0 +1,40 @@
+/* Shiki (Astro) syntax highlighting — maps Shiki css-variables theme to shared tokens */
+
+/*
+  When Shiki uses the "css-variables" theme, it outputs spans with inline styles
+  referencing these CSS variables. We map them to our shared tokens.
+*/
+
+:root {
+  --astro-code-color-text: var(--code-plain);
+  --astro-code-color-background: var(--code-bg);
+  --astro-code-token-constant: var(--code-number);
+  --astro-code-token-string: var(--code-string);
+  --astro-code-token-comment: var(--code-comment);
+  --astro-code-token-keyword: var(--code-keyword);
+  --astro-code-token-parameter: var(--code-variable);
+  --astro-code-token-function: var(--code-function);
+  --astro-code-token-string-expression: var(--code-string);
+  --astro-code-token-punctuation: var(--code-punctuation);
+  --astro-code-token-link: var(--code-attr);
+}
+
+/* Wrap Astro's .astro-code in code-block styling */
+.astro-code {
+  margin: var(--space-md) 0;
+  padding: var(--space-md);
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.astro-code code {
+  font-family: inherit;
+  font-size: inherit;
+  background: transparent;
+  padding: 0;
+}

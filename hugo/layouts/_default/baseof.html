@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ .Title }} — Hugo/Astro Study</title>
+  <meta name="view-transition" content="same-origin">
+  <style>
+    {{- $tokens := resources.Get "theme/tokens.css" }}
+    {{- $reset := resources.Get "theme/reset.css" }}
+    {{- $base := resources.Get "theme/base.css" }}
+    {{- $layout := resources.Get "theme/layout.css" }}
+    {{- $nav := resources.Get "theme/components/nav.css" }}
+    {{- $alert := resources.Get "theme/components/alert.css" }}
+    {{- $tabs := resources.Get "theme/components/tabs.css" }}
+    {{- $code := resources.Get "theme/components/code.css" }}
+    {{- $codeChroma := resources.Get "theme/components/code-chroma.css" }}
+    {{- $codeShiki := resources.Get "theme/components/code-shiki.css" }}
+    {{- $collapsible := resources.Get "theme/components/collapsible.css" }}
+    {{- $viewTransitions := resources.Get "theme/view-transitions.css" }}
+    {{- with $tokens }}{{ .Content | safeCSS }}{{ end }}
+    {{- with $reset }}{{ .Content | safeCSS }}{{ end }}
+    {{- with $base }}{{ .Content | safeCSS }}{{ end }}
+    {{- with $layout }}{{ .Content | safeCSS }}{{ end }}
+    {{- with $nav }}{{ .Content | safeCSS }}{{ end }}
+    {{- with $alert }}{{ .Content | safeCSS }}{{ end }}
+    {{- with $tabs }}{{ .Content | safeCSS }}{{ end }}
+    {{- with $code }}{{ .Content | safeCSS }}{{ end }}
+    {{- with $codeChroma }}{{ .Content | safeCSS }}{{ end }}
+    {{- with $codeShiki }}{{ .Content | safeCSS }}{{ end }}
+    {{- with $collapsible }}{{ .Content | safeCSS }}{{ end }}
+    {{- with $viewTransitions }}{{ .Content | safeCSS }}{{ end }}
+    {{- block "styles" . }}{{ end }}
+  </style>
+  {{- $settingsJS := resources.Get "shared/settings-toggle.js" }}
+  <script>{{ with $settingsJS }}{{ .Content | safeJS }}{{ end }}</script>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
+  <div class="layout">
+    <header class="layout__header" style="view-transition-name: site-header">
+      <a href="/hugo/" class="layout__header-title">Hugo/Astro Study</a>
+      <div class="layout__header-actions">
+        <button id="density-toggle" class="settings-toggle" type="button" aria-label="Switch to compact spacing">↔️</button>
+        <button id="theme-toggle" class="settings-toggle" type="button" aria-label="Switch to dark mode">🌙</button>
+      </div>
+    </header>
+    <div class="layout__body">
+      <nav class="layout__sidebar" aria-label="Site navigation" style="view-transition-name: site-sidebar">
+        <ul class="nav__list">
+          {{ $currentPath := .RelPermalink }}
+          {{ $navData := site.Data.nav }}
+          {{ range $navData.nav }}
+            <li class="nav__section">
+              <details{{ if hasPrefix $currentPath (printf "%s" .path) }} open{{ end }}>
+                <summary>{{ .title }}</summary>
+                {{ if .children }}
+                  <ul class="nav__children">
+                    {{ $platform := .platform }}
+                    {{ range .children }}
+                      {{ if .children }}
+                        <li>
+                          <details{{ if hasPrefix $currentPath (printf "%s" .path) }} open{{ end }}>
+                            <summary>{{ .title }}</summary>
+                            <ul class="nav__children">
+                              {{ range .children }}
+                                <li>
+                                  <a href="{{ .path }}/" class="nav__link"{{ if eq $currentPath (printf "%s/" .path) }} aria-current="page"{{ end }}{{ if ne (default $platform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
+                                </li>
+                              {{ end }}
+                            </ul>
+                          </details>
+                        </li>
+                      {{ else }}
+                        <li>
+                          <a href="{{ .path }}/" class="nav__link"{{ if eq $currentPath (printf "%s/" .path) }} aria-current="page"{{ end }}{{ if ne (default $platform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
+                        </li>
+                      {{ end }}
+                    {{ end }}
+                  </ul>
+                {{ end }}
+              </details>
+            </li>
+          {{ end }}
+        </ul>
+      </nav>
+      <main id="main-content" class="layout__main" tabindex="-1" style="view-transition-name: main-content">
+        {{ block "main" . }}{{ end }}
+      </main>
+    </div>
+    <footer class="layout__footer" style="view-transition-name: site-footer">
+      Hugo/Astro Split Site Study
+    </footer>
+  </div>
+</body>
+</html>

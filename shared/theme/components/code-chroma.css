@@ -1,0 +1,104 @@
+/* Chroma (Hugo) syntax highlighting — maps Chroma CSS classes to shared tokens */
+
+/* Background/container */
+.highlight pre {
+  margin: 0;
+  padding: var(--space-md);
+  background: var(--code-bg);
+  overflow-x: auto;
+}
+
+.highlight code {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--code-plain);
+  background: transparent;
+  padding: 0;
+}
+
+/* Wrap Hugo .highlight in code-block styling when not already wrapped */
+.highlight {
+  margin: var(--space-md) 0;
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* Keywords */
+.chroma .k,
+.chroma .kc,
+.chroma .kd,
+.chroma .kn,
+.chroma .kp,
+.chroma .kr { color: var(--code-keyword); }
+
+/* Keyword type (e.g., int, string) */
+.chroma .kt { color: var(--code-type); }
+
+/* Strings */
+.chroma .s,
+.chroma .sa,
+.chroma .sb,
+.chroma .sc,
+.chroma .dl,
+.chroma .sd,
+.chroma .s2,
+.chroma .se,
+.chroma .sh,
+.chroma .si,
+.chroma .sx,
+.chroma .sr,
+.chroma .s1,
+.chroma .ss { color: var(--code-string); }
+
+/* Comments */
+.chroma .c,
+.chroma .ch,
+.chroma .cm,
+.chroma .c1,
+.chroma .cs,
+.chroma .cp,
+.chroma .cpf { color: var(--code-comment); font-style: italic; }
+
+/* Functions */
+.chroma .nf,
+.chroma .fm { color: var(--code-function); }
+
+/* Numbers */
+.chroma .m,
+.chroma .mb,
+.chroma .mf,
+.chroma .mh,
+.chroma .mi,
+.chroma .il,
+.chroma .mo { color: var(--code-number); }
+
+/* Operators */
+.chroma .o,
+.chroma .ow { color: var(--code-operator); }
+
+/* Variables / Names */
+.chroma .n { color: var(--code-plain); }
+.chroma .na { color: var(--code-attr); }
+.chroma .nb { color: var(--code-function); }
+.chroma .nc { color: var(--code-type); }
+.chroma .nd { color: var(--code-function); }
+.chroma .ni { color: var(--code-variable); }
+.chroma .ne { color: var(--code-type); }
+.chroma .nn { color: var(--code-type); }
+.chroma .nt { color: var(--code-tag); }
+.chroma .nv,
+.chroma .vi,
+.chroma .vg,
+.chroma .vm { color: var(--code-variable); }
+
+/* Punctuation */
+.chroma .p { color: var(--code-punctuation); }
+
+/* Generic (diff-like output) */
+.chroma .gd { color: var(--code-keyword); }
+.chroma .gi { color: var(--code-type); }
+
+/* Literal */
+.chroma .l { color: var(--code-number); }

@@ -1,0 +1,41 @@
+{{- $title := .Get "title" -}}
+{{- $defaultOpen := .Get "defaultOpen" | default "false" -}}
+{{- $id := .Get "id" | default (printf "collapsible-%d" .Ordinal) -}}
+{{- $openClass := "" -}}
+{{- if eq $defaultOpen "true" }}{{ $openClass = " collapsible--open" }}{{ end -}}
+<div class="collapsible{{ $openClass }}" data-testid="{{ $id }}">
+  <button
+    class="collapsible__header"
+    id="{{ $id }}-header"
+    type="button"
+    aria-expanded="{{ if eq $defaultOpen "true" }}true{{ else }}false{{ end }}"
+    aria-controls="{{ $id }}-content"
+    data-testid="{{ $id }}-header"
+  >
+    <span class="collapsible__icon" aria-hidden="true">▶</span>
+    {{ $title }}
+  </button>
+  <div
+    class="collapsible__content"
+    id="{{ $id }}-content"
+    role="region"
+    aria-labelledby="{{ $id }}-header"
+    data-testid="{{ $id }}-content"
+  >
+    <div class="collapsible__content-inner">
+      <div>{{ .Inner }}</div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  var btn = document.getElementById('{{ $id }}-header');
+  if (!btn || btn._collapsibleInit) return;
+  btn._collapsibleInit = true;
+  btn.addEventListener('click', function() {
+    var container = btn.closest('.collapsible');
+    var isOpen = container.classList.toggle('collapsible--open');
+    btn.setAttribute('aria-expanded', String(isOpen));
+  });
+})();
+</script>

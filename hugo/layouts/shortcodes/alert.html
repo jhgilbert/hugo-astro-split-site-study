@@ -1,0 +1,9 @@
+{{- $type := .Get "type" | default "info" -}}
+{{- $emojis := dict "info" "ℹ️" "warning" "⚠️" "error" "❌" "success" "✅" -}}
+{{- $emoji := index $emojis $type -}}
+{{- $role := "status" -}}
+{{- if or (eq $type "error") (eq $type "warning") }}{{ $role = "alert" }}{{ end -}}
+<div class="alert alert--{{ $type }}" role="{{ $role }}" aria-label="{{ $type | title }}" data-testid="alert-{{ $type }}">
+  <div class="alert__title">{{ $emoji }} {{ $type | title }}</div>
+  <p>{{ .Inner }}</p>
+</div>

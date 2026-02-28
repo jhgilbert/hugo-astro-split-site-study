@@ -34,7 +34,7 @@ Set up the directory structure, package manager, and minimal configs for Hugo an
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -80,7 +80,7 @@ Create the shared design token system that both Hugo and Astro will consume. Thi
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -131,7 +131,7 @@ Define the shared navigation structure and write a script that generates the Cad
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -158,7 +158,7 @@ Wire up Hugo, Astro, and Caddy to all start with a single `yarn dev` at the repo
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -196,7 +196,7 @@ Set up Vitest for Preact component unit tests and Playwright for e2e tests. No t
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -254,7 +254,7 @@ Build the shared layout shell (header, sidebar nav, main content area, footer) i
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -297,7 +297,7 @@ Add view transitions so that navigating between pages (including cross-platform 
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -342,7 +342,7 @@ Build the first shared component — alerts — in both Hugo and Astro. Alerts a
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -396,7 +396,7 @@ Build the tabs component, which requires client-side interactivity (Preact on As
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -442,7 +442,7 @@ Set up syntax highlighting with Chroma (Hugo) and Shiki (Astro), with shared CSS
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -495,7 +495,7 @@ Build collapsible content sections with slide up/down animation, defaulting to c
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -531,7 +531,7 @@ Add a 404 page that Caddy serves for unmatched routes.
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -558,7 +558,7 @@ Build a generated HTML page that wraps Vitest component snapshots in the site's 
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 
@@ -592,7 +592,7 @@ Create the user story documentation with Playwright screenshots, linking everyth
 
 ### Status
 
-TODO
+DONE
 
 ### Verification
 

@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Collapsible from '../components/Collapsible.tsx';
+---
+<Layout title="Collapsible Demo">
+  <h1>Collapsible Sections — Astro</h1>
+  <p>Collapsible content sections rendered with Preact and hydrated client-side.</p>
+
+  <h2>Default (closed)</h2>
+  <Collapsible client:load title="Click to expand" data-testid="closed-demo">
+    <p>This section starts closed. Click the header to reveal this content. The section smoothly animates open and closed.</p>
+  </Collapsible>
+
+  <h2>Default open</h2>
+  <Collapsible client:load title="This section starts open" defaultOpen={true} data-testid="open-demo">
+    <p>This section is open by default because <code>defaultOpen</code> is set to <code>true</code>. Click the header to collapse it.</p>
+  </Collapsible>
+
+  <h2>Multiple sections</h2>
+  <Collapsible client:load title="Section one" data-testid="multi-1">
+    <p>Content for the first collapsible section.</p>
+  </Collapsible>
+  <Collapsible client:load title="Section two" data-testid="multi-2">
+    <p>Content for the second collapsible section.</p>
+  </Collapsible>
+  <Collapsible client:load title="Section three" data-testid="multi-3">
+    <p>Content for the third collapsible section.</p>
+  </Collapsible>
+
+  <h2>Rich content</h2>
+  <Collapsible client:load title="Section with rich content" data-testid="rich-demo">
+    <p>This section contains <strong>bold text</strong>, <em>italic text</em>, and a <a href="#">link</a>.</p>
+    <ul>
+      <li>List item one</li>
+      <li>List item two</li>
+      <li>List item three</li>
+    </ul>
+    <blockquote>A blockquote inside a collapsible section.</blockquote>
+  </Collapsible>
+</Layout>
