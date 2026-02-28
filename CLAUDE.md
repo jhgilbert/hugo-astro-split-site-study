@@ -2,9 +2,17 @@
 
 These are operating instructions. More information about the site's design can be found in [design.md](./design.md).
 
+## Project README
+
+Always keep the project README up-to-date with any high-level information that would be useful to a developer or visitor. For example, include a link to the docs, so they can view those if they want to.
+
 ## Package manager
 
 Use yarn.
+
+## Accessibility
+
+Always follow accessibility best practice, such as ensuring that a component is navigable with just the keyboard. Include tests for this wherever possible, such as in the e2e tests or the isolated component tests.
 
 ## CSS and theme
 
@@ -35,16 +43,16 @@ Anytime you add a new feature or component to the site, add Playwright e2e tests
 
 When covering functionality that could be conveyed as a user story, such as "The user can switch tabs with the tab nav", use Playwright screenshot testing to take a before and after screenshot.
 
-# Documentation
+## Documentation
 
 Maintain a `./docs/user_stories.md` file that links to individual user story demo files, also in Markdown.
 
 When you implement a new user story, such as "The user can switch tabs with the tab nav", or "The user can seamlessly switch between Hugo and Astro pages" create a user story file demoing that feature that uses the Playwright screenshots, so they are always up to date.
 
-# Feedback
+## Feedback
 
 Feedback is welcome. If I've made an unusual or non-ideal architectural choice, flag that and offer alternatives, along with pros and cons. Never assume I know what I'm talking about. Make suggestions that can improve my design anytime.
 
-# Learning
+## Learning
 
 When you use an industry standard pattern that I might not know about, such as using `data-testid` in a component, list that decision for me after finishing the task, and explain why it's a good pattern. Make these explanations very brief (think a bulleted list of key patterns/decisions).

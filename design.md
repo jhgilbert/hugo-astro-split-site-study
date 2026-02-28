@@ -45,6 +45,12 @@ Astro and Hugo should share one theme (CSS tokens and style rules). Components l
 
 When this is not possible (for example, due to differences between Astro syntax highlighters and Hugo syntax highlighters), notify me and offer alternative options if there are any, along with the pros and cons of all options.
 
+The site should include a "dark mode" toggle and a whitespace setting (compact or standard). These should only impact the CSS tokens. If you think something else needs to be impacted to achieve the feature, query me about it.
+
+## Quality control
+
+We take a lot of Vitest snapshots of HTML. In the site's architecture, include a simple generated "snapshot viewer" HTML page that wraps the component HTML in the overall site styles to accurately represent what the component will look like on the site. Include a package.json command, `view-snapshots`.
+
 ## Navigation
 
 The nav should be defined in YAML and shared between the two sites. The nav should allow three levels of nested section definition. The only nav entries at the top level should be "Hugo" and "Astro" to make it clear which pages live where in testing. A section at any level can be marked as living in Hugo or Astro. In this case, we would just mark the top sections as living in Hugo and Astro, respectively. Automatically derive the routing rules from this YAML, and generate a Caddy file accordingly. We do not want to manually maintain both a Caddy file and the nav YAML.

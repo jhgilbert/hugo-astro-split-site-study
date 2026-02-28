@@ -24,6 +24,7 @@ Set up the directory structure, package manager, and minimal configs for Hugo an
    - `hugo/package.json`: `"dev": "hugo server --port 1313"`
    - `astro/package.json`: `"dev": "astro dev --port 4321"`
 6. Run `yarn install` at the root to link workspaces.
+7. Create a `README.md` at the repo root with the project name, a brief description, and a link to `docs/` for further documentation. This README should be kept up to date as the project evolves.
 
 ### Status
 
@@ -40,6 +41,7 @@ TODO
   ├── shared/
   │   └── theme/
   ├── package.json
+  ├── README.md
   ├── CLAUDE.md
   ├── design.md
   └── plan.md
@@ -54,7 +56,7 @@ Create the shared design token system that both Hugo and Astro will consume. Thi
 ### Implementation
 
 1. In `shared/theme/`, create:
-   - `tokens.css` — CSS custom properties for colors (primary, secondary, grays), typography (font family, sizes, weights, line heights), spacing scale, border radii, and transitions. Include both light and dark mode values using `@media (prefers-color-scheme: dark)`.
+   - `tokens.css` — CSS custom properties for colors (primary, secondary, grays), typography (font family, sizes, weights, line heights), spacing scale (with both "standard" and "compact" values), border radii, and transitions. Include both light and dark mode values. Dark mode should be toggled via a `data-theme="dark"` attribute on `<html>` (not `prefers-color-scheme`), so it can be controlled by a user toggle. Compact whitespace should be toggled via a `data-density="compact"` attribute on `<html>`, overriding spacing tokens with tighter values.
    - `reset.css` — Minimal CSS reset (box-sizing, margin reset, etc.).
    - `base.css` — Base element styles (body, headings, links, paragraphs) using the tokens. Keep it minimal.
    - `layout.css` — Shell layout styles (sidebar + main content area, header, footer) using BEM naming that maps cleanly to future CSS modules (e.g., `.layout__sidebar`, `.layout__main`).
@@ -74,8 +76,9 @@ TODO
 
 - Run Hugo dev — confirm the page has visible styling (correct font, colors, spacing).
 - Run Astro dev — confirm the page has the same visual styling as Hugo.
-- Toggle your OS to dark mode — confirm both sites switch to dark theme colors.
 - Inspect the page in devtools — confirm CSS custom properties like `--color-primary`, `--space-md`, `--font-size-base` etc. are present on `:root`.
+- In devtools, manually add `data-theme="dark"` to the `<html>` element — confirm both sites switch to dark theme colors. (The toggle UI will be added in a later step.)
+- In devtools, manually add `data-density="compact"` to the `<html>` element — confirm spacing tightens across the page.
 
 ---
 
@@ -155,9 +158,9 @@ TODO
 
 ---
 
-## Step 5: Site shell and navigation
+## Step 5: Site shell, navigation, and settings toggles
 
-Build the shared layout shell (header, sidebar nav, main content area, footer) in both Hugo and Astro, driven by the shared `nav.yaml`. This is the first step where the two sites start to feel like one.
+Build the shared layout shell (header, sidebar nav, main content area, footer) in both Hugo and Astro, driven by the shared `nav.yaml`. Include a dark mode toggle and a whitespace density toggle in the header. This is the first step where the two sites start to feel like one.
 
 ### Implementation
 
@@ -174,6 +177,18 @@ Build the shared layout shell (header, sidebar nav, main content area, footer) i
    - The current page's `<details>` ancestor should be `open`. Links to Hugo pages should be full hrefs.
 4. Both should use the shared `layout.css` BEM classes for the shell structure so they look identical.
 5. Add the `shared/nav.yaml` home pages as actual content pages in both sites.
+6. **Settings toggles (in the header, both Hugo and Astro):**
+   - Add a dark mode toggle button that sets `data-theme="dark"` on `<html>` (and removes it for light mode). These toggles only impact CSS tokens — no other logic changes are needed.
+   - Add a whitespace density toggle (standard/compact) that sets `data-density="compact"` on `<html>`.
+   - Both toggles should use a small inline `<script>` (shared between Hugo and Astro) that persists the user's choice to `localStorage` and restores it on page load (including across Hugo/Astro navigation).
+   - Use emoji for the toggle icons (e.g., sun/moon for theme, expand/collapse for density).
+7. **Accessibility:**
+   - Use semantic landmark elements: `<header>`, `<nav>`, `<main>`, `<footer>`.
+   - Add `aria-label="Site navigation"` to the `<nav>` element.
+   - Mark the current page link with `aria-current="page"`.
+   - Ensure all nav links and `<details>`/`<summary>` toggles are keyboard-focusable and operable with Enter/Space.
+   - Use a skip-to-content link as the first focusable element in the shell.
+   - Settings toggle buttons should have accessible labels (e.g., `aria-label="Switch to dark mode"`).
 
 ### Status
 
@@ -186,7 +201,10 @@ TODO
 - Click a link in the Hugo nav that points to an Astro page — confirm it navigates to the Astro site through Caddy, and the nav updates to reflect the new location.
 - Click a link in the Astro nav that points to a Hugo page — confirm the reverse works too.
 - Confirm the header, footer, and overall layout look visually identical between the two sites.
-- Toggle dark mode — confirm the shell renders correctly in both themes.
+- Click the dark mode toggle — confirm the site switches to dark theme. Refresh the page — confirm the setting persists. Navigate to the other platform (Hugo to Astro or vice versa) — confirm the setting persists across the boundary.
+- Click the whitespace density toggle — confirm spacing tightens. Refresh — confirm it persists.
+- Tab through the page with the keyboard — confirm you can reach all nav links, the settings toggles, the skip-to-content link moves focus to the main content area, and the current page link is distinguishable.
+- Inspect the HTML — confirm `<header>`, `<nav>`, `<main>`, `<footer>` landmarks are used and the current page has `aria-current="page"`.
 
 ---
 
@@ -232,9 +250,10 @@ Build the first shared component — alerts — in both Hugo and Astro. Alerts a
 2. **Astro component:**
    - Create `astro/src/components/Alert.astro` — a static Astro component that accepts `type` (info/warning/error/success) and renders a slot for content.
    - Since this is static (no Preact needed), it renders to plain HTML with BEM classes.
+   - Use `role="alert"` for urgent alerts (error/warning) and `role="status"` for informational ones (info/success). Add `aria-label` with the alert type (e.g., `aria-label="Warning"`).
 3. **Hugo shortcode:**
    - Create `hugo/layouts/shortcodes/alert.html` — a Hugo shortcode that accepts a `type` parameter and renders the inner content.
-   - Use the same HTML structure and BEM classes as the Astro component.
+   - Use the same HTML structure, BEM classes, and ARIA attributes as the Astro component.
 4. **Demo pages:**
    - Create `astro/src/pages/astro/alerts.astro` — shows all alert variants (info, warning, error, success) with example content.
    - Create `hugo/content/hugo/alerts.md` — uses the `{{< alert >}}` shortcode to show all variants.
@@ -269,10 +288,11 @@ Build the tabs component, which requires client-side interactivity (Preact on As
    - Accept tabs as props (array of `{ label, children }` or use slots).
    - Manage active tab state in Preact. Render tab navigation and panels. Only show the active panel.
    - Use `data-testid` attributes for test targeting.
+   - **Accessibility:** Use WAI-ARIA tabs pattern — `role="tablist"` on the nav, `role="tab"` on each tab button, `role="tabpanel"` on each panel. Set `aria-selected="true"` on the active tab, `aria-controls` linking tabs to panels, and `tabindex` management. Support arrow key navigation between tabs (Left/Right arrows move focus between tabs, Home/End jump to first/last).
 3. **Hugo shortcode:**
    - Create `hugo/layouts/shortcodes/tabs.html` and `hugo/layouts/shortcodes/tab.html` shortcodes.
-   - Render the same HTML structure and BEM classes.
-   - Add a small inline `<script>` (or a JS file in Hugo's `static/js/`) for tab switching behavior.
+   - Render the same HTML structure, BEM classes, and ARIA attributes.
+   - Add a small inline `<script>` (or a JS file in Hugo's `static/js/`) for tab switching behavior, including the same arrow key navigation.
 4. **Demo pages:**
    - Create `astro/src/pages/astro/tabs.astro` — shows tabs with 2 tabs, 3 tabs, and tabs with rich content (code blocks, paragraphs).
    - Create `hugo/content/hugo/tabs.md` — same permutations using shortcodes.
@@ -288,6 +308,7 @@ TODO
 - Visit `http://localhost:3000/astro/tabs` — confirm the same behavior.
 - Compare visually — tab nav and panels should look the same on both sites.
 - Confirm that the first tab is active by default on page load.
+- Use keyboard only: Tab to the tab nav, use Left/Right arrow keys to move between tabs, press Enter/Space to activate. Confirm focus stays within the tab list and the correct panel shows.
 - Toggle dark mode — confirm tabs render correctly.
 
 ---
@@ -340,10 +361,11 @@ Build collapsible content sections with slide up/down animation, defaulting to c
    - Accept `title` and `defaultOpen` (boolean) props.
    - Manage open/closed state. Animate content reveal with CSS transitions.
    - Use `data-testid` attributes.
+   - **Accessibility:** Use a `<button>` for the toggle header with `aria-expanded="true|false"` and `aria-controls` pointing to the content panel's `id`. The content panel should have `role="region"` and `aria-labelledby` referencing the button. Ensure the button is keyboard-operable (Enter/Space to toggle).
 3. **Hugo shortcode:**
    - Create `hugo/layouts/shortcodes/collapsible.html`.
-   - Same HTML structure and BEM classes.
-   - Add vanilla JS for toggle behavior and animation.
+   - Same HTML structure, BEM classes, and ARIA attributes.
+   - Add vanilla JS for toggle behavior and animation (including updating `aria-expanded`).
    - Support a `defaultOpen` parameter.
 4. **Demo pages:**
    - Create `astro/src/pages/astro/collapsible.astro` — show: a closed collapsible, a default-open collapsible, multiple collapsibles in sequence, a collapsible with rich content inside.
@@ -359,6 +381,7 @@ TODO
 - Visit `http://localhost:3000/hugo/collapsible` — click a closed section header and confirm it slides open smoothly. Click again to close.
 - Confirm the "default open" section is already open on page load.
 - Visit `http://localhost:3000/astro/collapsible` — confirm the same behavior and visuals.
+- Use keyboard only: Tab to a collapsible header, press Enter or Space to toggle. Confirm `aria-expanded` updates in devtools.
 - Toggle dark mode — confirm collapsible sections render correctly.
 
 ---
@@ -422,28 +445,60 @@ TODO
 
 ---
 
-## Step 13: Component and e2e tests
+## Step 13: Snapshot viewer
+
+Build a generated HTML page that wraps Vitest component snapshots in the site's styles, so you can visually verify what components look like without running the full site.
+
+### Implementation
+
+1. Create a script (`shared/scripts/generate-snapshot-viewer.js`) that:
+   - Scans the `astro/tests/__snapshots__/` directory for all snapshot HTML files.
+   - For each snapshot, wraps it in a minimal HTML page that imports the shared `index.css` (tokens, reset, base, component styles).
+   - Generates an index page listing all component snapshots with links.
+   - Outputs the viewer to a `snapshot-viewer/` directory (at the repo root or in a build output directory).
+2. Add a root-level script: `"view-snapshots": "node shared/scripts/generate-snapshot-viewer.js && open snapshot-viewer/index.html"` (or use a simple local server).
+3. Add `snapshot-viewer/` to `.gitignore` (it's generated output).
+
+### Status
+
+TODO
+
+### Verification
+
+- Run `yarn test:unit` first (to generate snapshots), then run `yarn view-snapshots`.
+- Confirm a browser window opens showing an index of all component snapshots.
+- Click into a snapshot — confirm the component HTML renders with the site's full styling (tokens, colors, typography, component CSS).
+- Verify that both light and dark theme variants are visible (or toggle via the data-theme attribute).
+
+---
+
+## Step 14: Component and e2e tests
 
 Write all unit tests (Vitest) for Preact components and e2e tests (Playwright) for all components and features across both Hugo and Astro.
 
 ### Implementation
 
 1. **Vitest unit tests for Preact components:**
-   - `astro/tests/Tabs.test.tsx` — render Tabs with 2 and 3 tabs, verify correct initial render, verify tab switching updates the active panel. Include file snapshots in `__snapshots__/Tabs/`.
-   - `astro/tests/Collapsible.test.tsx` — render Collapsible closed and open (via `defaultOpen`), verify toggle behavior. Include file snapshots in `__snapshots__/Collapsible/`.
+   - `astro/tests/Tabs.test.tsx` — render Tabs with 2 and 3 tabs, verify correct initial render, verify tab switching updates the active panel. Verify ARIA attributes: `role="tablist"`, `role="tab"`, `role="tabpanel"`, `aria-selected`, `aria-controls`. Test arrow key navigation between tabs. Include file snapshots in `__snapshots__/Tabs/`.
+   - `astro/tests/Collapsible.test.tsx` — render Collapsible closed and open (via `defaultOpen`), verify toggle behavior. Verify `aria-expanded` toggles correctly and `aria-controls`/`aria-labelledby` are wired up. Test keyboard toggle (Enter/Space on the button). Include file snapshots in `__snapshots__/Collapsible/`.
    - (Alerts are static Astro components — test them via e2e only.)
 2. **Playwright e2e tests:**
    - `tests/e2e/navigation.spec.ts`:
      - Test navigating between Hugo pages.
      - Test navigating between Astro pages.
      - Test navigating from Hugo to Astro and back.
-     - Verify the nav sidebar correctly reflects the current page.
+     - Verify the nav sidebar correctly reflects the current page (check `aria-current="page"` on the active link).
+     - Test keyboard navigation through the sidebar nav (Tab key, Enter to follow links).
+     - Verify the skip-to-content link works (Tab to it, press Enter, confirm focus moves to main content).
      - Take before/after screenshots of cross-platform navigation.
    - `tests/e2e/alerts.spec.ts`:
      - Verify all alert types render on both `/hugo/alerts` and `/astro/alerts`.
+     - Verify correct ARIA roles (`role="alert"` for error/warning, `role="status"` for info/success).
      - Screenshot test for visual comparison.
    - `tests/e2e/tabs.spec.ts`:
      - Verify tab switching on both `/hugo/tabs` and `/astro/tabs`.
+     - Test keyboard interaction: arrow keys to navigate tabs, Enter/Space to activate, Home/End to jump to first/last tab.
+     - Verify ARIA attributes update correctly on tab switch.
      - Take before (first tab active) and after (second tab active) screenshots.
    - `tests/e2e/code-blocks.spec.ts`:
      - Verify code blocks render with syntax highlighting on both sites.
@@ -451,12 +506,18 @@ Write all unit tests (Vitest) for Preact components and e2e tests (Playwright) f
    - `tests/e2e/collapsible.spec.ts`:
      - Verify open/close behavior on both sites.
      - Verify `defaultOpen` behavior.
+     - Test keyboard toggle (Tab to header, Enter/Space to toggle).
+     - Verify `aria-expanded` updates on toggle.
      - Take before (closed) and after (open) screenshots.
    - `tests/e2e/404.spec.ts`:
      - Verify 404 page renders for unknown routes.
-   - `tests/e2e/dark-mode.spec.ts`:
-     - Use Playwright's `emulateMedia` to switch color scheme.
-     - Take light and dark screenshots of a representative page on each site.
+   - `tests/e2e/settings-toggles.spec.ts`:
+     - Click the dark mode toggle — verify `data-theme="dark"` is set on `<html>`.
+     - Reload the page — verify the setting persists (via localStorage).
+     - Navigate from Hugo to Astro — verify the setting persists across platforms.
+     - Click the whitespace density toggle — verify `data-density="compact"` is set on `<html>`.
+     - Verify both toggles are keyboard-accessible (Tab, Enter/Space).
+     - Take light vs dark and standard vs compact screenshots.
 
 ### Status
 
@@ -470,7 +531,7 @@ TODO
 
 ---
 
-## Step 14: User story documentation
+## Step 15: User story documentation
 
 Create the user story documentation with Playwright screenshots, linking everything together in an index file.
 
@@ -483,7 +544,7 @@ Create the user story documentation with Playwright screenshots, linking everyth
    - `docs/user_stories/alerts.md` — "The user can see contextual alert messages." Include screenshots of all alert types on both platforms.
    - `docs/user_stories/code-blocks.md` — "The user can view syntax-highlighted code." Include screenshots comparing Hugo and Astro rendering.
    - `docs/user_stories/collapsible.md` — "The user can expand and collapse content sections." Include before/after screenshots.
-   - `docs/user_stories/dark-mode.md` — "The user can view the site in dark mode." Include light/dark comparison screenshots.
+   - `docs/user_stories/settings-toggles.md` — "The user can toggle dark mode and whitespace density." Include light/dark and standard/compact comparison screenshots. Note that settings persist across Hugo/Astro navigation via localStorage.
 3. Each story file should:
    - State the user story clearly.
    - Embed the relevant Playwright screenshots (reference them from the test output directory).
