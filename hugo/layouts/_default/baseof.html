@@ -49,12 +49,17 @@
     <div class="layout__body">
       <nav class="layout__sidebar" aria-label="Site navigation" style="view-transition-name: site-sidebar">
         <ul class="nav__list">
-          {{ $currentPath := .RelPermalink }}
+          {{ $relPath := .RelPermalink }}
+          {{/* Caddy rewrites public paths like /code-reviews/* to /hugo/code-reviews/* before
+               proxying to Hugo, so .RelPermalink includes a /hugo prefix that doesn't appear
+               in the public URL or in nav.yaml paths. Strip it to get the public path for
+               nav matching. */}}
+          {{ $publicPath := strings.TrimPrefix "/hugo" $relPath }}
           {{ $navData := site.Data.nav }}
           {{ range $navData.nav }}
             <li class="nav__section">
-              {{ $sectionOpen := hasPrefix $currentPath (printf "%s" .path) }}
-              {{ if not $sectionOpen }}{{ range .children }}{{ if hasPrefix $currentPath (printf "%s" .path) }}{{ $sectionOpen = true }}{{ end }}{{ end }}{{ end }}
+              {{ $sectionOpen := or (hasPrefix $relPath (printf "%s" .path)) (hasPrefix $publicPath (printf "%s" .path)) }}
+              {{ if not $sectionOpen }}{{ range .children }}{{ if or (hasPrefix $relPath (printf "%s" .path)) (hasPrefix $publicPath (printf "%s" .path)) }}{{ $sectionOpen = true }}{{ end }}{{ end }}{{ end }}
               <details{{ if $sectionOpen }} open{{ end }}>
                 <summary>{{ .title }}</summary>
                 {{ if .children }}
@@ -64,12 +69,12 @@
                       {{ $childPlatform := default $sectionPlatform .platform }}
                       {{ if .children }}
                         <li>
-                          <details{{ if hasPrefix $currentPath (printf "%s" .path) }} open{{ end }}>
+                          <details{{ if or (hasPrefix $relPath (printf "%s" .path)) (hasPrefix $publicPath (printf "%s" .path)) }} open{{ end }}>
                             <summary>{{ .title }}</summary>
                             <ul class="nav__children">
                               {{ range .children }}
                                 <li>
-                                  <a href="{{ .path }}/" class="nav__link"{{ if eq $currentPath (printf "%s/" .path) }} aria-current="page"{{ end }}{{ if ne (default $childPlatform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
+                                  <a href="{{ .path }}/" class="nav__link"{{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }} aria-current="page"{{ end }}{{ if ne (default $childPlatform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
                                 </li>
                               {{ end }}
                             </ul>
@@ -77,7 +82,7 @@
                         </li>
                       {{ else }}
                         <li>
-                          <a href="{{ .path }}/" class="nav__link"{{ if eq $currentPath (printf "%s/" .path) }} aria-current="page"{{ end }}{{ if ne (default $childPlatform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
+                          <a href="{{ .path }}/" class="nav__link"{{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }} aria-current="page"{{ end }}{{ if ne (default $childPlatform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
                         </li>
                       {{ end }}
                     {{ end }}

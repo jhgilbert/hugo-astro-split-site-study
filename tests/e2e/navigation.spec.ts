@@ -23,13 +23,14 @@ test.describe('Site Navigation', () => {
 
   test('Hugo nav section is open when on Hugo page', async ({ page }) => {
     await page.goto('/hugo/');
-    const hugoDetails = page.locator('.nav__section details', { has: page.locator('summary:text("Hugo")') });
+    // Use direct child selector to avoid matching the parent "Site Components" details
+    const hugoDetails = page.locator('.nav__children > li > details:has(> summary:text("Hugo"))');
     await expect(hugoDetails).toHaveAttribute('open', '');
   });
 
   test('Astro nav section is open when on Astro page', async ({ page }) => {
     await page.goto('/astro/');
-    const astroDetails = page.locator('.nav__section details', { has: page.locator('summary:text("Astro")') });
+    const astroDetails = page.locator('.nav__children > li > details:has(> summary:text("Astro"))');
     await expect(astroDetails).toHaveAttribute('open', '');
   });
 
@@ -89,6 +90,42 @@ test.describe('Site Navigation', () => {
     await page.keyboard.press('Tab');
     const focusedLink = page.locator(':focus');
     await expect(focusedLink).toHaveAttribute('class', /nav__link/);
+  });
+
+  test('Hugo rewritten route shows correct nav state (code-reviews)', async ({ page }) => {
+    await page.goto('/code-reviews/reviewbot/key-features/');
+    const nav = page.locator('nav[aria-label="Site navigation"]');
+
+    // The "Code Reviews" section should be open
+    const codeReviewsSection = nav.locator('.nav__section > details:has(> summary:text("Code Reviews"))');
+    await expect(codeReviewsSection).toHaveAttribute('open', '');
+
+    // The "ReviewBot" subsection should be open
+    const reviewBotSection = nav.locator('details:has(> summary:text("ReviewBot"))');
+    await expect(reviewBotSection).toHaveAttribute('open', '');
+
+    // The current page link should be marked
+    const currentLink = nav.locator('a[aria-current="page"]');
+    await expect(currentLink).toHaveText('Key Features');
+    await expect(currentLink).toHaveAttribute('href', '/code-reviews/reviewbot/key-features/');
+  });
+
+  test('Astro rewritten route shows correct nav state (debugging-tools)', async ({ page }) => {
+    await page.goto('/debugging-tools/bughunter-pro/setup/');
+    const nav = page.locator('nav[aria-label="Site navigation"]');
+
+    // The "Debugging Tools" section should be open
+    const debugSection = nav.locator('.nav__section > details:has(> summary:text("Debugging Tools"))');
+    await expect(debugSection).toHaveAttribute('open', '');
+
+    // The "BugHunter Pro" subsection should be open
+    const bugHunterSection = nav.locator('details:has(> summary:text("BugHunter Pro"))');
+    await expect(bugHunterSection).toHaveAttribute('open', '');
+
+    // The current page link should be marked
+    const currentLink = nav.locator('a[aria-current="page"]');
+    await expect(currentLink).toHaveText('Setup');
+    await expect(currentLink).toHaveAttribute('href', '/debugging-tools/bughunter-pro/setup/');
   });
 
   test('HTML landmarks are correct', async ({ page }) => {

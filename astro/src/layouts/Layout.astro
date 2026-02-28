@@ -9,18 +9,27 @@ interface Props {
 }
 
 const { title } = Astro.props;
-const currentPath = Astro.url.pathname.replace(/\/$/, "") + "/";
+const rawPath = Astro.url.pathname.replace(/\/$/, "") + "/";
+// Caddy rewrites public paths like /debugging-tools/* to /astro/debugging-tools/*
+// before proxying to Astro, so Astro.url.pathname includes an /astro prefix that
+// doesn't appear in the public URL or in nav.yaml paths. Strip it to get the public
+// path, and match against both to handle all nav entries correctly.
+const publicPath = rawPath.replace(/^\/astro/, "") || "/";
 
 function isCurrentSection(path: string, children?: any[]): boolean {
-  if (currentPath.startsWith(path)) return true;
+  if (rawPath.startsWith(path) || publicPath.startsWith(path)) return true;
   if (children) {
-    return children.some((child: any) => currentPath.startsWith(child.path));
+    return children.some(
+      (child: any) =>
+        rawPath.startsWith(child.path) || publicPath.startsWith(child.path),
+    );
   }
   return false;
 }
 
 function isCurrentPage(path: string): boolean {
-  return currentPath === path + "/";
+  const normalized = path + "/";
+  return rawPath === normalized || publicPath === normalized;
 }
 
 function getPlatform(
