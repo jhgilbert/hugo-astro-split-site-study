@@ -99,7 +99,7 @@ function getPlatform(
             {
               navData.nav.map((section: any) => (
                 <li class="nav__section">
-                  <details open={isCurrentSection(section.path, section.children)}>
+                  <details open>
                     <summary>{section.title}</summary>
                     {section.children && (
                       <ul class="nav__children">

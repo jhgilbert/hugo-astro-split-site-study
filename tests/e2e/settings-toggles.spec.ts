@@ -31,9 +31,8 @@ test.describe('Settings Toggles', () => {
     await page.click('#theme-toggle');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
-    // Navigate to Astro
-    const astroSummary = page.locator('.nav__section details summary:text("Astro")');
-    await astroSummary.click();
+    // Open the Astro section, then navigate
+    await page.locator('.nav__section details summary:text("Astro")').click();
     await page.click('.nav__link[href="/astro/"]');
     await expect(page).toHaveURL(/\/astro\//);
 

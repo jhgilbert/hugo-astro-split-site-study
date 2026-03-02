@@ -53,9 +53,8 @@ test.describe('View Transitions', () => {
       await page.goto('/hugo/');
       await page.screenshot({ path: 'tests/e2e/screenshots/view-transition-hugo-before.png', fullPage: true });
 
-      // Navigate to Astro
-      const astroSummary = page.locator('.nav__section details summary:text("Astro")');
-      await astroSummary.click();
+      // Open the Astro section, then navigate
+      await page.locator('.nav__section details summary:text("Astro")').click();
       await page.click('.nav__link[href="/astro/"]');
       await expect(page).toHaveURL(/\/astro\//);
 
@@ -66,9 +65,8 @@ test.describe('View Transitions', () => {
       await page.goto('/astro/');
       await page.screenshot({ path: 'tests/e2e/screenshots/view-transition-astro-before.png', fullPage: true });
 
-      // Navigate to Hugo
-      const hugoSummary = page.locator('.nav__section details summary:text("Hugo")');
-      await hugoSummary.click();
+      // Open the Hugo section, then navigate
+      await page.locator('.nav__section details summary:text("Hugo")').click();
       await page.click('.nav__link[href="/hugo/"]');
       await expect(page).toHaveURL(/\/hugo\//);
 

@@ -64,17 +64,7 @@
                /hugo/code-reviews/... even though those are in a different nav section. */}}
           {{ range $navData.nav }}
             <li class="nav__section">
-              {{ $sectionOpen := false }}
-              {{ range .children }}
-                {{ if .children }}
-                  {{ range .children }}
-                    {{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }}{{ $sectionOpen = true }}{{ end }}
-                  {{ end }}
-                {{ else }}
-                  {{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }}{{ $sectionOpen = true }}{{ end }}
-                {{ end }}
-              {{ end }}
-              <details{{ if $sectionOpen }} open{{ end }}>
+              <details open>
                 <summary>{{ .title }}</summary>
                 {{ if .children }}
                   <ul class="nav__children">

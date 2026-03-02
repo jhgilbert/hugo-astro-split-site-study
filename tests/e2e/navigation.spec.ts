@@ -36,11 +36,8 @@ test.describe('Site Navigation', () => {
 
   test('navigate from Hugo to Astro', async ({ page }) => {
     await page.goto('/hugo/');
-    // Open the Astro section
-    const astroSummary = page.locator('.nav__section details summary:text("Astro")');
-    await astroSummary.click();
-
-    // Click the Astro Home link
+    // Open the Astro section, then click the link
+    await page.locator('.nav__section details summary:text("Astro")').click();
     const astroLink = page.locator('.nav__link[href="/astro/"]');
     await astroLink.click();
 
@@ -51,11 +48,8 @@ test.describe('Site Navigation', () => {
 
   test('navigate from Astro to Hugo', async ({ page }) => {
     await page.goto('/astro/');
-    // Open the Hugo section
-    const hugoSummary = page.locator('.nav__section details summary:text("Hugo")');
-    await hugoSummary.click();
-
-    // Click the Hugo Home link
+    // Open the Hugo section, then click the link
+    await page.locator('.nav__section details summary:text("Hugo")').click();
     const hugoLink = page.locator('.nav__link[href="/hugo/"]');
     await hugoLink.click();
 
@@ -108,10 +102,6 @@ test.describe('Site Navigation', () => {
     const currentLink = nav.locator('a[aria-current="page"]');
     await expect(currentLink).toHaveText('Key Features');
     await expect(currentLink).toHaveAttribute('href', '/code-reviews/reviewbot/key-features/');
-
-    // Unrelated sections should NOT be open
-    const siteComponentsSection = nav.locator('.nav__section > details:has(> summary:text("Site Components"))');
-    await expect(siteComponentsSection).not.toHaveAttribute('open');
   });
 
   test('Astro rewritten route shows correct nav state (debugging-tools)', async ({ page }) => {
@@ -130,10 +120,6 @@ test.describe('Site Navigation', () => {
     const currentLink = nav.locator('a[aria-current="page"]');
     await expect(currentLink).toHaveText('Setup');
     await expect(currentLink).toHaveAttribute('href', '/debugging-tools/bughunter-pro/setup/');
-
-    // Unrelated sections should NOT be open
-    const siteComponentsSection = nav.locator('.nav__section > details:has(> summary:text("Site Components"))');
-    await expect(siteComponentsSection).not.toHaveAttribute('open');
   });
 
   test('HTML landmarks are correct', async ({ page }) => {

@@ -47,6 +47,14 @@ The nav has four top-level sections:
 
 ## Testing
 
+After running `yarn install`, install Playwright browser binaries before running e2e tests:
+
+```bash
+yarn playwright install chromium
+```
+
+Then:
+
 ```bash
 yarn test:unit     # Vitest component tests (in astro/)
 yarn test:e2e      # Playwright e2e tests (requires dev servers)
