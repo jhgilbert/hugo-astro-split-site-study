@@ -76,8 +76,11 @@ for (const [topPath, { platform, needsRewrite }] of routeMap) {
   }
 }
 
-// Proxy Vite dev server paths to Astro (needed for client-side hydration in dev)
-caddyfile += `\thandle /@id/* {
+// Proxy Vite HMR WebSocket and dev server paths to Astro
+caddyfile += `\thandle /_vite_hmr {
+\t\treverse_proxy localhost:4321
+\t}
+\thandle /@id/* {
 \t\treverse_proxy localhost:4321
 \t}
 \thandle /@vite/* {

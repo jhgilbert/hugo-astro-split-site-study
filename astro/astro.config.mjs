@@ -17,5 +17,11 @@ export default defineConfig({
   },
   vite: {
     plugins: [yaml()],
+    server: {
+      hmr: {
+        clientPort: 3000,
+        path: '/_vite_hmr',
+      },
+    },
   },
 });
