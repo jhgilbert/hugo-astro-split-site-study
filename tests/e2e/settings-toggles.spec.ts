@@ -77,7 +77,7 @@ test.describe('Settings Toggles', () => {
 
   test.describe('screenshots', () => {
     test('light vs dark mode', async ({ page }) => {
-      await page.goto('/hugo/');
+      await page.goto('/astro/debugging-tools/stacktrace-wizard/setup');
       await page.screenshot({ path: 'tests/e2e/screenshots/settings-light.png', fullPage: true });
 
       await page.click('#theme-toggle');
@@ -85,7 +85,7 @@ test.describe('Settings Toggles', () => {
     });
 
     test('standard vs compact spacing', async ({ page }) => {
-      await page.goto('/hugo/');
+      await page.goto('/astro/debugging-tools/stacktrace-wizard/setup');
       await page.screenshot({ path: 'tests/e2e/screenshots/settings-standard.png', fullPage: true });
 
       await page.click('#density-toggle');

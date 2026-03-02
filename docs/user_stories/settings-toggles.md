@@ -23,6 +23,8 @@ The header contains two settings toggle buttons: one for dark/light theme and on
 
 ## Screenshots
 
+Screenshots are taken on the [StackTrace Wizard — Setup](/astro/debugging-tools/stacktrace-wizard/setup) page, which contains tabs, alerts, collapsibles, and code blocks to make the visual differences more apparent.
+
 ### Light mode (default)
 ![Light mode](../../tests/e2e/screenshots/settings-light.png)
 
