@@ -1,4 +1,4 @@
-# Hugo/Astro Split Site Study
+# Hugo/Astro split site study
 
 A study of how to gracefully combine Hugo and Astro into one site, for the purpose of eventually migrating from Hugo to Astro.
 
@@ -8,42 +8,15 @@ A study of how to gracefully combine Hugo and Astro into one site, for the purpo
 - [Yarn](https://yarnpkg.com/) (v1)
 - [Caddy](https://caddyserver.com/) — install with `brew install caddy` on macOS
 
-## Getting Started
+## Getting started
 
 ```bash
 yarn install
 yarn dev
 ```
 
-This starts Hugo, Astro, and a Caddy reverse proxy concurrently. Visit:
+This starts Hugo, Astro, and a Caddy reverse proxy concurrently. Visit `http://localhost:3000` to view the integrated site. As you navigate, the header at the top of the page will indicate whether you are on Hugo or Astro.
 
-- `http://localhost:3000/hugo/` — Hugo pages
-- `http://localhost:3000/astro/` — Astro pages
-
-## Project Structure
-
-```
-├── astro/          # Astro site (SSR with Preact components)
-├── hugo/           # Hugo site (legacy mock)
-├── shared/         # Shared theme, nav config, and scripts
-│   ├── theme/      # CSS tokens, reset, base styles, component styles
-│   ├── nav.yaml    # Shared navigation definition
-│   └── scripts/    # Build/generation scripts
-├── tests/          # Playwright e2e tests
-├── docs/           # Documentation and user stories
-├── CLAUDE.md       # AI assistant instructions
-├── design.md       # Design document
-└── plan.md         # Implementation plan
-```
-
-## Site Sections
-
-The nav has four top-level sections:
-
-- **Hugo** — Component demos rendered by Hugo (legacy mock)
-- **Astro** — Component demos rendered by Astro (SSR with Preact)
-- **Debugging Tools** — Documentation for imaginary debugging products (served by Astro): BugHunter Pro, StackTrace Wizard, MemoryGuard
-- **Code Reviews** — Documentation for imaginary code review products (served by Hugo): ReviewBot, DiffLens
 
 ## Testing
 
