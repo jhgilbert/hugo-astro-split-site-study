@@ -31,9 +31,8 @@ test.describe('Settings Toggles', () => {
     await page.click('#theme-toggle');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
-    // Open the Astro section, then navigate
-    await page.locator('.nav__section details summary:text("Astro")').click();
-    await page.click('.nav__link[href="/astro/"]');
+    // Click the Astro subsection link to navigate
+    await page.locator('.nav__subsection-link:text("Astro")').click();
     await expect(page).toHaveURL(/\/astro\//);
 
     // Dark mode should persist

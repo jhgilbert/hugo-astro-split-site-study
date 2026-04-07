@@ -42,6 +42,21 @@ function getPlatform(
 ): string {
   return itemPlatform || parentPlatform;
 }
+
+function getFirstLeafPath(item: any): string {
+  if (item.children && item.children.length > 0) {
+    return getFirstLeafPath(item.children[0]);
+  }
+  return item.path;
+}
+
+function getFirstLeafPlatform(item: any, parentPlatform: string): string {
+  const platform = item.platform || parentPlatform;
+  if (item.children && item.children.length > 0) {
+    return getFirstLeafPlatform(item.children[0], platform);
+  }
+  return platform;
+}
 ---
 
 <html lang="en">
@@ -97,43 +112,49 @@ function getPlatform(
         >
           <ul class="nav__list">
             {
-              navData.nav.map((section: any) => (
-                <li class="nav__section">
-                  <details open>
-                    <summary>{section.title}</summary>
-                    {section.children && (
+              navData.nav.map((section: any) => {
+                const sectionActive = isCurrentSection(section.path, section.children);
+                const sectionFirstPath = getFirstLeafPath(section);
+                const sectionFirstPlatform = getFirstLeafPlatform(section, section.platform || "");
+                return (
+                  <li class="nav__section">
+                    <a
+                      href={sectionFirstPath + "/"}
+                      class="nav__section-link"
+                      aria-expanded={sectionActive ? "true" : "false"}
+                      data-astro-reload={sectionFirstPlatform !== "astro" ? true : undefined}
+                    >
+                      {section.title}
+                    </a>
+                    {sectionActive && section.children && (
                       <ul class="nav__children">
                         {section.children.map((child: any) => {
-                          const childPlatform = getPlatform(
-                            child.platform,
-                            section.platform,
-                          );
+                          const childPlatform = getPlatform(child.platform, section.platform);
                           if (child.children) {
+                            const childActive = isCurrentSection(child.path, child.children);
+                            const childFirstPath = getFirstLeafPath(child);
+                            const childFirstPlatform = getFirstLeafPlatform(child, childPlatform);
                             return (
                               <li>
-                                <details open={isCurrentSection(child.path, child.children)}>
-                                  <summary>{child.title}</summary>
+                                <a
+                                  href={childFirstPath + "/"}
+                                  class="nav__subsection-link"
+                                  aria-expanded={childActive ? "true" : "false"}
+                                  data-astro-reload={childFirstPlatform !== "astro" ? true : undefined}
+                                >
+                                  {child.title}
+                                </a>
+                                {childActive && (
                                   <ul class="nav__children">
                                     {child.children.map((grandchild: any) => {
-                                      const gcPlatform = getPlatform(
-                                        grandchild.platform,
-                                        childPlatform,
-                                      );
+                                      const gcPlatform = getPlatform(grandchild.platform, childPlatform);
                                       return (
                                         <li>
                                           <a
                                             href={grandchild.path + "/"}
                                             class="nav__link"
-                                            aria-current={
-                                              isCurrentPage(grandchild.path)
-                                                ? "page"
-                                                : undefined
-                                            }
-                                            data-astro-reload={
-                                              gcPlatform !== "astro"
-                                                ? true
-                                                : undefined
-                                            }
+                                            aria-current={isCurrentPage(grandchild.path) ? "page" : undefined}
+                                            data-astro-reload={gcPlatform !== "astro" ? true : undefined}
                                           >
                                             {grandchild.title}
                                           </a>
@@ -141,7 +162,7 @@ function getPlatform(
                                       );
                                     })}
                                   </ul>
-                                </details>
+                                )}
                               </li>
                             );
                           }
@@ -150,12 +171,8 @@ function getPlatform(
                               <a
                                 href={child.path + "/"}
                                 class="nav__link"
-                                aria-current={
-                                  isCurrentPage(child.path) ? "page" : undefined
-                                }
-                                data-astro-reload={
-                                  childPlatform !== "astro" ? true : undefined
-                                }
+                                aria-current={isCurrentPage(child.path) ? "page" : undefined}
+                                data-astro-reload={childPlatform !== "astro" ? true : undefined}
                               >
                                 {child.title}
                               </a>
@@ -164,9 +181,9 @@ function getPlatform(
                         })}
                       </ul>
                     )}
-                  </details>
-                </li>
-              ))
+                  </li>
+                );
+              })
             }
           </ul>
         </nav>

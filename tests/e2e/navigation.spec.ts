@@ -21,24 +21,81 @@ test.describe('Site Navigation', () => {
     await expect(currentLink).toHaveAttribute('href', '/astro/');
   });
 
-  test('Hugo nav section is open when on Hugo page', async ({ page }) => {
+  test('Hugo subsection is expanded when on Hugo page', async ({ page }) => {
     await page.goto('/hugo/');
-    // Use direct child selector to avoid matching the parent "Site Components" details
-    const hugoDetails = page.locator('.nav__children > li > details:has(> summary:text("Hugo"))');
-    await expect(hugoDetails).toHaveAttribute('open', '');
+    const hugoLink = page.locator('.nav__subsection-link:text("Hugo")');
+    await expect(hugoLink).toHaveAttribute('aria-expanded', 'true');
   });
 
-  test('Astro nav section is open when on Astro page', async ({ page }) => {
+  test('Astro subsection is expanded when on Astro page', async ({ page }) => {
     await page.goto('/astro/');
-    const astroDetails = page.locator('.nav__children > li > details:has(> summary:text("Astro"))');
-    await expect(astroDetails).toHaveAttribute('open', '');
+    const astroLink = page.locator('.nav__subsection-link:text("Astro")');
+    await expect(astroLink).toHaveAttribute('aria-expanded', 'true');
   });
 
-  test('navigate from Hugo to Astro', async ({ page }) => {
+  test('only current section is expanded', async ({ page }) => {
     await page.goto('/hugo/');
-    // Open the Astro section, then click the link
-    await page.locator('.nav__section details summary:text("Astro")').click();
-    const astroLink = page.locator('.nav__link[href="/astro/"]');
+    const nav = page.locator('nav[aria-label="Site navigation"]');
+
+    // Site Components should be expanded (we're in it)
+    const siteComponentsLink = nav.locator('.nav__section-link:text("Site Components")');
+    await expect(siteComponentsLink).toHaveAttribute('aria-expanded', 'true');
+
+    // Debugging Tools and Code Reviews should be collapsed
+    const debuggingLink = nav.locator('.nav__section-link:text("Debugging Tools")');
+    await expect(debuggingLink).toHaveAttribute('aria-expanded', 'false');
+
+    const codeReviewsLink = nav.locator('.nav__section-link:text("Code Reviews")');
+    await expect(codeReviewsLink).toHaveAttribute('aria-expanded', 'false');
+
+    // Collapsed sections should not show their children
+    const debuggingChildren = nav.locator('.nav__section:has(.nav__section-link:text("Debugging Tools")) > .nav__children');
+    await expect(debuggingChildren).toHaveCount(0);
+  });
+
+  test('only current subsection is expanded within a section', async ({ page }) => {
+    await page.goto('/hugo/');
+    const nav = page.locator('nav[aria-label="Site navigation"]');
+
+    // Hugo subsection should be expanded
+    const hugoLink = nav.locator('.nav__subsection-link:text("Hugo")');
+    await expect(hugoLink).toHaveAttribute('aria-expanded', 'true');
+
+    // Astro subsection should be collapsed
+    const astroLink = nav.locator('.nav__subsection-link:text("Astro")');
+    await expect(astroLink).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('clicking section header navigates to first page in section', async ({ page }) => {
+    // Start on Hugo page (Site Components section)
+    await page.goto('/hugo/');
+
+    // Click Code Reviews section header — should navigate to first page
+    const codeReviewsLink = page.locator('.nav__section-link:text("Code Reviews")');
+    await codeReviewsLink.click();
+
+    await expect(page).toHaveURL(/\/code-reviews\/reviewbot\/setup\//);
+    const currentLink = page.locator('a[aria-current="page"]');
+    await expect(currentLink).toHaveText('Setup');
+  });
+
+  test('clicking subsection header navigates to first child page', async ({ page }) => {
+    // Start on a Debugging Tools page
+    await page.goto('/debugging-tools/bughunter-pro/setup/');
+
+    // Click StackTrace Wizard subsection header
+    const stackTraceLink = page.locator('.nav__subsection-link:text("StackTrace Wizard")');
+    await stackTraceLink.click();
+
+    await expect(page).toHaveURL(/\/debugging-tools\/stacktrace-wizard\/setup\//);
+    const currentLink = page.locator('a[aria-current="page"]');
+    await expect(currentLink).toHaveText('Setup');
+  });
+
+  test('navigate from Hugo to Astro via subsection link', async ({ page }) => {
+    await page.goto('/hugo/');
+    // Click the Astro subsection link directly — navigates to /astro/
+    const astroLink = page.locator('.nav__subsection-link:text("Astro")');
     await astroLink.click();
 
     await expect(page).toHaveURL(/\/astro\//);
@@ -46,11 +103,10 @@ test.describe('Site Navigation', () => {
     await expect(currentLink).toHaveText('Home');
   });
 
-  test('navigate from Astro to Hugo', async ({ page }) => {
+  test('navigate from Astro to Hugo via subsection link', async ({ page }) => {
     await page.goto('/astro/');
-    // Open the Hugo section, then click the link
-    await page.locator('.nav__section details summary:text("Hugo")').click();
-    const hugoLink = page.locator('.nav__link[href="/hugo/"]');
+    // Click the Hugo subsection link directly — navigates to /hugo/
+    const hugoLink = page.locator('.nav__subsection-link:text("Hugo")');
     await hugoLink.click();
 
     await expect(page).toHaveURL(/\/hugo\//);
@@ -75,28 +131,29 @@ test.describe('Site Navigation', () => {
     await page.goto('/hugo/');
     const nav = page.locator('nav[aria-label="Site navigation"]');
 
-    // Hugo section is already open. Focus its summary.
-    const hugoSummary = nav.locator('summary:text("Hugo")');
-    await hugoSummary.focus();
-    await expect(hugoSummary).toBeFocused();
+    // Focus the expanded section link
+    const sectionLink = nav.locator('.nav__section-link:text("Site Components")');
+    await sectionLink.focus();
+    await expect(sectionLink).toBeFocused();
 
-    // Tab from the summary into the open section — should reach a nav link
+    // Tab from the section link into the children — should reach a subsection or nav link
     await page.keyboard.press('Tab');
-    const focusedLink = page.locator(':focus');
-    await expect(focusedLink).toHaveAttribute('class', /nav__link/);
+    const focusedEl = page.locator(':focus');
+    const tagName = await focusedEl.evaluate(el => el.tagName.toLowerCase());
+    expect(tagName).toBe('a');
   });
 
   test('Hugo rewritten route shows correct nav state (code-reviews)', async ({ page }) => {
     await page.goto('/code-reviews/reviewbot/key-features/');
     const nav = page.locator('nav[aria-label="Site navigation"]');
 
-    // The "Code Reviews" section should be open
-    const codeReviewsSection = nav.locator('.nav__section > details:has(> summary:text("Code Reviews"))');
-    await expect(codeReviewsSection).toHaveAttribute('open', '');
+    // The "Code Reviews" section should be expanded
+    const codeReviewsLink = nav.locator('.nav__section-link:text("Code Reviews")');
+    await expect(codeReviewsLink).toHaveAttribute('aria-expanded', 'true');
 
-    // The "ReviewBot" subsection should be open
-    const reviewBotSection = nav.locator('details:has(> summary:text("ReviewBot"))');
-    await expect(reviewBotSection).toHaveAttribute('open', '');
+    // The "ReviewBot" subsection should be expanded
+    const reviewBotLink = nav.locator('.nav__subsection-link:text("ReviewBot")');
+    await expect(reviewBotLink).toHaveAttribute('aria-expanded', 'true');
 
     // The current page link should be marked
     const currentLink = nav.locator('a[aria-current="page"]');
@@ -108,13 +165,13 @@ test.describe('Site Navigation', () => {
     await page.goto('/debugging-tools/bughunter-pro/setup/');
     const nav = page.locator('nav[aria-label="Site navigation"]');
 
-    // The "Debugging Tools" section should be open
-    const debugSection = nav.locator('.nav__section > details:has(> summary:text("Debugging Tools"))');
-    await expect(debugSection).toHaveAttribute('open', '');
+    // The "Debugging Tools" section should be expanded
+    const debugLink = nav.locator('.nav__section-link:text("Debugging Tools")');
+    await expect(debugLink).toHaveAttribute('aria-expanded', 'true');
 
-    // The "BugHunter Pro" subsection should be open
-    const bugHunterSection = nav.locator('details:has(> summary:text("BugHunter Pro"))');
-    await expect(bugHunterSection).toHaveAttribute('open', '');
+    // The "BugHunter Pro" subsection should be expanded
+    const bugHunterLink = nav.locator('.nav__subsection-link:text("BugHunter Pro")');
+    await expect(bugHunterLink).toHaveAttribute('aria-expanded', 'true');
 
     // The current page link should be marked
     const currentLink = nav.locator('a[aria-current="page"]');

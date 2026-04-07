@@ -28,18 +28,19 @@ test.describe('View Transitions', () => {
   });
 
   test('Astro-to-Hugo links have data-astro-reload', async ({ page }) => {
-    await page.goto('/astro/');
-    // Open Hugo section
-    const hugoSummary = page.locator('.nav__section details summary:text("Hugo")');
-    await hugoSummary.click();
+    // Navigate to Hugo side first so the Hugo subsection is expanded and links are visible
+    await page.goto('/hugo/');
+    const nav = page.locator('nav[aria-label="Site navigation"]');
 
-    const hugoLinks = page.locator('.nav__link[href^="/hugo/"]');
+    const hugoLinks = nav.locator('.nav__link[href^="/hugo/"]');
     const count = await hugoLinks.count();
     expect(count).toBeGreaterThan(0);
 
-    for (let i = 0; i < count; i++) {
-      await expect(hugoLinks.nth(i)).toHaveAttribute('data-astro-reload');
-    }
+    // Hugo links on the Hugo side should NOT have data-astro-reload (same platform)
+    // Check from Astro side: the Hugo subsection link itself should have data-astro-reload
+    await page.goto('/astro/');
+    const hugoSubsectionLink = page.locator('.nav__subsection-link:text("Hugo")');
+    await expect(hugoSubsectionLink).toHaveAttribute('data-astro-reload');
   });
 
   test('Hugo page has view-transition meta tag', async ({ page }) => {
@@ -53,9 +54,8 @@ test.describe('View Transitions', () => {
       await page.goto('/hugo/');
       await page.screenshot({ path: 'tests/e2e/screenshots/view-transition-hugo-before.png', fullPage: true });
 
-      // Open the Astro section, then navigate
-      await page.locator('.nav__section details summary:text("Astro")').click();
-      await page.click('.nav__link[href="/astro/"]');
+      // Click the Astro subsection link to navigate
+      await page.locator('.nav__subsection-link:text("Astro")').click();
       await expect(page).toHaveURL(/\/astro\//);
 
       await page.screenshot({ path: 'tests/e2e/screenshots/view-transition-astro-after.png', fullPage: true });
@@ -65,9 +65,8 @@ test.describe('View Transitions', () => {
       await page.goto('/astro/');
       await page.screenshot({ path: 'tests/e2e/screenshots/view-transition-astro-before.png', fullPage: true });
 
-      // Open the Hugo section, then navigate
-      await page.locator('.nav__section details summary:text("Hugo")').click();
-      await page.click('.nav__link[href="/hugo/"]');
+      // Click the Hugo subsection link to navigate
+      await page.locator('.nav__subsection-link:text("Hugo")').click();
       await expect(page).toHaveURL(/\/hugo\//);
 
       await page.screenshot({ path: 'tests/e2e/screenshots/view-transition-hugo-after.png', fullPage: true });

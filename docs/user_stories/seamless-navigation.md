@@ -9,6 +9,7 @@ The site uses a Caddy reverse proxy to combine Hugo (at `/hugo/`) and Astro (at 
 ## How it works
 
 - The sidebar nav is driven by a shared `nav.yaml` file, rendered identically in both Hugo templates and Astro layouts.
+- Only the section containing the current page is expanded. Section and subsection headers are links — clicking one navigates to the first page in that section rather than toggling it open/closed.
 - Astro uses `<ClientRouter />` for SPA-like transitions between Astro pages, with `data-astro-reload` on links to Hugo pages to force full navigation.
 - Hugo uses the native View Transitions API (`<meta name="view-transition" content="same-origin">`) with matching `view-transition-name` values so shell elements visually persist.
 - Both frameworks share the same CSS tokens and BEM classes, making the layouts visually identical.

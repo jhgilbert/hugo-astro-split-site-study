@@ -63,40 +63,69 @@
                Prefix matching causes false positives because /hugo is a prefix of
                /hugo/code-reviews/... even though those are in a different nav section. */}}
           {{ range $navData.nav }}
-            <li class="nav__section">
-              <details open>
-                <summary>{{ .title }}</summary>
-                {{ if .children }}
-                  <ul class="nav__children">
-                    {{ $sectionPlatform := .platform }}
-                    {{ range .children }}
-                      {{ $childPlatform := default $sectionPlatform .platform }}
-                      {{ if .children }}
-                        {{ $childOpen := false }}
-                        {{ range .children }}
-                          {{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }}{{ $childOpen = true }}{{ end }}
-                        {{ end }}
-                        <li>
-                          <details{{ if $childOpen }} open{{ end }}>
-                            <summary>{{ .title }}</summary>
-                            <ul class="nav__children">
-                              {{ range .children }}
-                                <li>
-                                  <a href="{{ .path }}/" class="nav__link"{{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }} aria-current="page"{{ end }}{{ if ne (default $childPlatform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
-                                </li>
-                              {{ end }}
-                            </ul>
-                          </details>
-                        </li>
-                      {{ else }}
-                        <li>
-                          <a href="{{ .path }}/" class="nav__link"{{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }} aria-current="page"{{ end }}{{ if ne (default $childPlatform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
-                        </li>
-                      {{ end }}
-                    {{ end }}
-                  </ul>
+            {{/* Check if current page is in this top-level section */}}
+            {{ $sectionActive := false }}
+            {{ $sectionPlatform := .platform }}
+            {{ range .children }}
+              {{ if .children }}
+                {{ range .children }}
+                  {{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }}{{ $sectionActive = true }}{{ end }}
                 {{ end }}
-              </details>
+              {{ else }}
+                {{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }}{{ $sectionActive = true }}{{ end }}
+              {{ end }}
+            {{ end }}
+            {{/* Find first leaf page path and platform for the section link */}}
+            {{ $firstPagePath := "" }}
+            {{ $firstPagePlatform := $sectionPlatform }}
+            {{ with index .children 0 }}
+              {{ $firstPagePlatform = default $sectionPlatform .platform }}
+              {{ if .children }}
+                {{ with index .children 0 }}
+                  {{ $firstPagePath = printf "%s/" .path }}
+                {{ end }}
+              {{ else }}
+                {{ $firstPagePath = printf "%s/" .path }}
+              {{ end }}
+            {{ end }}
+            <li class="nav__section">
+              <a href="{{ $firstPagePath }}" class="nav__section-link" aria-expanded="{{ if $sectionActive }}true{{ else }}false{{ end }}"{{ if ne $firstPagePlatform "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
+              {{ if and $sectionActive .children }}
+                <ul class="nav__children">
+                  {{ range .children }}
+                    {{ $childPlatform := default $sectionPlatform .platform }}
+                    {{ if .children }}
+                      {{ $childActive := false }}
+                      {{ range .children }}
+                        {{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }}{{ $childActive = true }}{{ end }}
+                      {{ end }}
+                      {{/* Find first leaf page for the subsection link */}}
+                      {{ $childFirstPath := "" }}
+                      {{ $childFirstPlatform := $childPlatform }}
+                      {{ with index .children 0 }}
+                        {{ $childFirstPath = printf "%s/" .path }}
+                        {{ $childFirstPlatform = default $childPlatform .platform }}
+                      {{ end }}
+                      <li>
+                        <a href="{{ $childFirstPath }}" class="nav__subsection-link" aria-expanded="{{ if $childActive }}true{{ else }}false{{ end }}"{{ if ne $childFirstPlatform "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
+                        {{ if $childActive }}
+                          <ul class="nav__children">
+                            {{ range .children }}
+                              <li>
+                                <a href="{{ .path }}/" class="nav__link"{{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }} aria-current="page"{{ end }}{{ if ne (default $childPlatform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
+                              </li>
+                            {{ end }}
+                          </ul>
+                        {{ end }}
+                      </li>
+                    {{ else }}
+                      <li>
+                        <a href="{{ .path }}/" class="nav__link"{{ if or (eq $relPath (printf "%s/" .path)) (eq $publicPath (printf "%s/" .path)) }} aria-current="page"{{ end }}{{ if ne (default $childPlatform .platform) "hugo" }} data-astro-reload{{ end }}>{{ .title }}</a>
+                      </li>
+                    {{ end }}
+                  {{ end }}
+                </ul>
+              {{ end }}
             </li>
           {{ end }}
         </ul>
